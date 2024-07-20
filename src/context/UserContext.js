@@ -5,20 +5,45 @@ import { useEffect } from 'react';
 import { useDebug } from './DebugContext';
 import { useAPI } from "./APIContext";
 import axios from 'axios'; 
+import useError from '../hooks/useError';
+import { useGlobalError } from '../context/ErrorContext';
+import withAsyncErrorHandler from '../errors/withAsyncErrorHandler';
+
 
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
+
+  const { error, handleError, clearError } = useError();
+  const { globalError, setError: setGlobalError, clearError: clearGlobalError } = useGlobalError();
   const {debug} = useDebug();
   const name = "<UserContext>";
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [status, setStatus] = useState(()=>{if(localStorage.getItem('token') != null ){return true; }else{return false}});
-  const {API} = useAPI();
+  const {API, APIObj} = useAPI();
   const [isAdmin, setIsAdmin] = useState(false);
 
   const newStatus = (value) => {
     setStatus(value);
+  }
+
+  const refreshUserContext = async() => {
+    debug('refreshing user context')
+    try{
+      const response = await APIObj.get('/api/auth/verify');
+      console.log(response)
+    if (response.status == 200){
+      setStatus(true);
+      setUser(response.data)
+    }
+
+    } catch(error){
+      setGlobalError(error)
+    //
+      //handleError(error)
+    }
+    
   }
 
   //login. self-explanatory
@@ -44,6 +69,7 @@ const UserProvider = ({ children }) => {
   //After the token state object has been updated upon login, update the user obj
   useEffect(()=>{
     debug('useEffect, dependency: userContext token')
+    refreshUserContext()
     if(token != undefined){
       debug('token exists, updating user data')
       updateUserData();
@@ -57,17 +83,15 @@ const UserProvider = ({ children }) => {
   const fetchUserData = async () => {
     debug("Fetching User Data in UserContext");
     try {
-      const response = await axios.get(`${API}/api/users/profile`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await APIObj.get(`${API}/api/auth/verify`);
       if (response.data) {
         return response.data;
       } else {
         throw new Error('Failed to fetch user data');
       }
     } catch (error) {
+      setGlobalError(error)
+
       console.error('Error fetching user data:', error);
       return null; 
     }
@@ -99,7 +123,7 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, token, login, logout, status, newStatus, updateUserData, isAdmin }}>
+    <UserContext.Provider value={{ user, token, login, logout, status, newStatus, updateUserData, isAdmin,refreshUserContext }}>
       {children}
     </UserContext.Provider>
   );

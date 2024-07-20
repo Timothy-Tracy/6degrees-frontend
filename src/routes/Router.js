@@ -19,6 +19,7 @@ const ShoppingCartPage = lazy(() => import("../components/ui/ShoppingCart.js"));
 
 
 
+const MyAccountPageCopy = lazy(() => import("../components/ui/MyAccount copy.js"));
 
 const MyAccountPage = lazy(() => import("../components/ui/MyAccount.js"));
 const Store = lazy(() => import("../components/ui/Store.js"));
@@ -34,6 +35,7 @@ const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
 
 const AdminPage = lazy(() => import("../components/ui/Admin.js")); // Added Admin Page
+const PostPage = lazy(() => import("../components/posts/PostPage.js")); // Added Admin Page
 
 /*****Routes******/
 
@@ -43,6 +45,7 @@ const ThemeRoutes = [
     element: <Suspense fallback={<div>Loading...</div>}><FullLayout /></Suspense>,
     children: [
       { path: "/", element: <Navigate to="/store" /> },
+      { path: "/posts/:query", element: <PostPage></PostPage> },
       { path: "/checkout", element: <CheckoutPage /> },
 
       { path: "/ivan",  element: <Ivan /> },
@@ -55,6 +58,7 @@ const ThemeRoutes = [
       { path: "/shoppingcart",  element: <ShoppingCartPage /> },
 
       { path: "/itempage/:id", element: <ItemPage /> },
+      { path: "/myaccountcopy",  element: <MyAccountPageCopy /> },
 
       { path: "/myaccount",  element: <MyAccountPage /> },
       { path: "/store",  element: <Store /> },

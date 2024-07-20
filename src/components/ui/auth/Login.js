@@ -6,7 +6,12 @@ import { useAPI } from '../../../context/APIContext';
 import axios from 'axios';
 import APIModeAlert from '../../APIModeAlert';
 
+import useError from '../../../hooks/useError';
+import { useGlobalError } from '../../../context/ErrorContext';
+import withAsyncErrorHandler from '../../../errors/withAsyncErrorHandler';
 const Login = () => {
+    const { error, handleError, clearError, ErrorMessageComponent } = useError();
+    const { globalError, setError: setGlobalError, clearError: clearGlobalError } = useGlobalError();
     const { login, newStatus, updateUserData } = useUser();
     const { API, APIMode, APIObj} = useAPI();
     const navigate = useNavigate();
@@ -60,6 +65,7 @@ const Login = () => {
                 throw new Error('No token received, authentication failed.');
             }
         } catch (error) {
+            handleError(error)
             setMessage('Authentication failed: ' + (error.response?.data.message || error.message));
             setMessageType('danger');
             console.error("Authentication error:", error.response || error.message);
@@ -75,6 +81,7 @@ const Login = () => {
                     <Card>
                         <CardTitle className='p-3'><h2>{createAccountMode ? "Create Account" : "Login"}</h2></CardTitle>
                         <CardBody>
+                            <ErrorMessageComponent></ErrorMessageComponent>
                             <APIModeAlert></APIModeAlert>
                             {message && <Alert color={messageType}>{message}</Alert>}
                             <Form onSubmit={handleSubmit}>

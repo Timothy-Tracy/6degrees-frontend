@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Container } from "reactstrap";
+import GlobalErrorComponent from "../errors/GlobalErrorComponent";
 
 const FullLayout = () => {
   return (
@@ -19,6 +20,7 @@ const FullLayout = () => {
         <div className="contentArea">
           {/********header**********/}
           <Header />
+          <GlobalErrorComponent></GlobalErrorComponent>
           {/********Middle Content**********/}
           <Container className="p-4 wrapper" fluid>
             <Outlet />

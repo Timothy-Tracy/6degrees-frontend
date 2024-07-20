@@ -78,23 +78,19 @@ const MyAccountPage = () => {
     const MyAccount = () => {
         const x = "<MyAccount>"
         const { debug } = useDebug()
-        const {API} = useAPI();
+        const {API, APIObj} = useAPI();
         debug("rendered", x)
         const [editMode, setEditMode] = useState(false)
-        
+        const [userData, setUserData] = useState({})
         const [output, setOutput] = useState(<div>hi</div>)
         const [user1, setUser1] = useState();
         
         // NOTE FOR TIM : Function to fetch user data from the API
         const fetchUserData = async () => {
             try {
-              const response = await axios.get(`${API}/api/users/profile`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-              });
+              const response = await APIObj.get(`${API}/api/users/`);
               if (response.data) {
-                return response.data;
+                 setUserData(response.data)
               } else {
                 throw new Error('Failed to fetch user data');
               }
@@ -103,32 +99,20 @@ const MyAccountPage = () => {
               return null; 
             }
           };
+          fetchUserData();
 
+/*
         // NOTE FOR TIM : FILL IN MY ACCOUNT FORM WITH API
         /// APIMode effect setting user1
         useEffect(() => {
             ///const updateUserData = async () => {
                 if (APIMode) {
                     // const userData = await fetchUserData();
-                    const userData = user;
                     console.log(userData); 
 
                     if (userData) {
                         // Check if the addresses array is present and not empty
-                        if (userData && userData.addresses && userData.addresses.length > 0) {
-                            // Destructure the first address from the array
-                            const { streetAddress, city, state, zipCode, mobile: addressMobile } = userData.addresses[0];
-                            setUser1({
-                                firstName: userData.firstName,
-                                lastName: userData.lastName,
-                                email: userData.email,
-                                mobile: userData.mobile || addressMobile, // Use user's mobile if present, otherwise use address's mobile
-                                streetAddress,
-                                city,
-                                state,
-                                zipCode
-                            });
-                        } else {
+                        
                             // Handle the case where no addresses are available
                             setUser1({
                                 firstName: userData.firstName,
@@ -140,7 +124,7 @@ const MyAccountPage = () => {
                                 state: "",
                                 zipCode: ""
                             });
-                        }
+                        
                     }
                 } else {
                     // Handle the case where APIMode is false (maybe for testing or development)
@@ -160,12 +144,9 @@ const MyAccountPage = () => {
             
             ///updateUserData();
         }, [APIMode, debug]);
+*/
 
-
-        //user1 effect
-        useEffect(()=>{
-            debug(`user1 side effect : user1 = ${JSON.stringify(user1)}`)
-        },[user1])
+        
         
         function toggleEditMode() {
             if (editMode) {
@@ -203,18 +184,18 @@ const MyAccountPage = () => {
                             <Container className="p-3">
                                 <Row className="py-2">
                                     <Col>
-                                        <AccountInfoObject editMode={editMode}  id="firstName" name="firsName" content={user1.firstName} type="text" label="First Name"></AccountInfoObject>
+                                        <AccountInfoObject editMode={editMode}  id="firstName" name="firsName" content={userData.firstName} type="text" label="First Name"></AccountInfoObject>
                                     </Col>
                                     <Col>
-                                        <AccountInfoObject editMode={editMode} id="lastName" name="lastName" content={user1.lastName} type="text" label="Last Name"></AccountInfoObject>
+                                        <AccountInfoObject editMode={editMode} id="lastName" name="lastName" content={userData.lastName} type="text" label="Last Name"></AccountInfoObject>
                                     </Col>
                                 </Row>
                                 <Row className="py-2">
                                     <Col>
-                                        <AccountInfoObject editMode={editMode} id="email" name="email" content={user1.email} type="text" label="Email Address"></AccountInfoObject>
+                                        <AccountInfoObject editMode={editMode} id="email" name="email" content={userData.email} type="text" label="Email Address"></AccountInfoObject>
                                     </Col>
                                     <Col>
-                                        <AccountInfoObject editMode={editMode} id="mobile" name="mobile" content={user1.mobile} type="text" label="Mobile Number"></AccountInfoObject>
+                                        <AccountInfoObject editMode={editMode} id="mobile" name="mobile" content={userData.mobile} type="text" label="Mobile Number"></AccountInfoObject>
                                     </Col>
                                 </Row>
                                 </Container>
@@ -278,7 +259,7 @@ const MyAccountPage = () => {
             }
 
             
-        }, [editMode, APIMode, user1])
+        }, [editMode, APIMode])
 
         return (output);
     }
@@ -289,11 +270,11 @@ const MyAccountPage = () => {
 
     //Ensure the user is logged in before serving page
 
-    useEffect(() => {
-        setOutput(<EnsureLogin component={<MyAccount />}></EnsureLogin>)
-        debug(`Status changed. Status is ${status} so im changing output`, x)
-    }, [status, APIMode])
-    return (output)
+    // useEffect(() => {
+    //     setOutput(<EnsureLogin component={<MyAccount />}></EnsureLogin>)
+    //     debug(`Status changed. Status is ${status} so im changing output`, x)
+    // }, [status, APIMode])
+    return (<MyAccount />)
 }
 
 export default MyAccountPage;

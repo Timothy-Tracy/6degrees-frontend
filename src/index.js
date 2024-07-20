@@ -6,14 +6,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { HashRouter } from "react-router-dom";
 import Loader from "./layouts/loader/Loader";
-import { UserProvider } from "./context/UserContext";
+import { UserProvider, useUser } from "./context/UserContext";
 import { DebugProvider } from "./context/DebugContext";
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { APIProvider } from "./context/APIContext";
+import { ErrorProvider } from './context/ErrorContext';
+import ErrorBoundary from './errors/ErrorBoundary';
 const queryClient = new QueryClient();
+const {refreshUserContext} = useUser;
 
 
 const rootElement = document.getElementById('root');
@@ -22,12 +25,14 @@ const root = createRoot(rootElement);
 root.render(
   <QueryClientProvider client={queryClient}>
   <Suspense fallback={<Loader />}>
+  <ErrorProvider>
+  <ErrorBoundary>
     <HashRouter>
       
         <DebugProvider>
           <APIProvider>
             <UserProvider>
-
+              {refreshUserContext}
               <App />
 
             </UserProvider>
@@ -37,6 +42,8 @@ root.render(
       
 
     </HashRouter>
+    </ErrorBoundary>
+    </ErrorProvider>
   </Suspense>
   </QueryClientProvider>
   ,
