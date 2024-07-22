@@ -26,7 +26,7 @@ import { useDebug } from "../../context/DebugContext";
 import APIModeAlert from "../APIModeAlert";
 import { useAPI } from "../../context/APIContext";
 import { ShoppingCart } from "./ShoppingCart.js";
-import { AccountInfoObject } from "./MyAccount.js";
+import { AccountInfoObject } from "./AccountSettings.js";
 import axios from 'axios';
 
 

@@ -76,8 +76,8 @@ const Header = () => {
             <DropdownMenu>
               <DropdownItem header>Info</DropdownItem>
               <DropdownItem>
-                <Link to="/myaccount" className="nav-link">
-                  My Account
+                <Link to="/settings" className="nav-link">
+                  Settings
                 </Link>
               </DropdownItem>
               <DropdownItem>

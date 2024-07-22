@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import React, { Suspense } from "react";
 import { ItemPage } from '../components/ui/ItemPage';
 import OrderSuccess from "../components/ui/OrderSuccess";
+import { NodeProvider } from "../context/NodeContext.js";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -19,9 +20,8 @@ const ShoppingCartPage = lazy(() => import("../components/ui/ShoppingCart.js"));
 
 
 
-const MyAccountPageCopy = lazy(() => import("../components/ui/MyAccount copy.js"));
 
-const MyAccountPage = lazy(() => import("../components/ui/MyAccount.js"));
+const MyAccountPage = lazy(() => import("../components/ui/AccountSettings.js"));
 const Store = lazy(() => import("../components/ui/Store.js"));
 const Starter = lazy(() => import("../views/Starter.js"));
 const About = lazy(() => import("../views/About.js"));
@@ -45,7 +45,7 @@ const ThemeRoutes = [
     element: <Suspense fallback={<div>Loading...</div>}><FullLayout /></Suspense>,
     children: [
       { path: "/", element: <Navigate to="/store" /> },
-      { path: "/posts/:query", element: <PostPage></PostPage> },
+      { path: "/posts/:query", element: <NodeProvider><PostPage></PostPage></NodeProvider> },
       { path: "/checkout", element: <CheckoutPage /> },
 
       { path: "/ivan",  element: <Ivan /> },
@@ -58,9 +58,8 @@ const ThemeRoutes = [
       { path: "/shoppingcart",  element: <ShoppingCartPage /> },
 
       { path: "/itempage/:id", element: <ItemPage /> },
-      { path: "/myaccountcopy",  element: <MyAccountPageCopy /> },
 
-      { path: "/myaccount",  element: <MyAccountPage /> },
+      { path: "/settings",  element: <MyAccountPage /> },
       { path: "/store",  element: <Store /> },
       { path: "/starter",  element: <Starter /> },
       { path: "/about",  element: <About /> },
