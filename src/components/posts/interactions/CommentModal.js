@@ -9,7 +9,7 @@ import TimeAgo from "../../../tools/TimeAgo";
 import { useNode } from "../../../context/NodeContext.js";
 import { useUser } from "../../../context/UserContext.js";
 
-const CommentModal = ({show, handleClose}) => {
+const CommentModal = ({show, handleClose, parentComment, setParentComment}) => {
     const { prevNode, setPrevNode, node, setNode } = useNode();
     const { APIObj } = useAPI();
     const { query } = useParams();
@@ -24,7 +24,8 @@ const CommentModal = ({show, handleClose}) => {
             await APIObj.post(`/api/comments`,
                 {
                     NODE_UUID : node.NODE_UUID,
-                    body: commentText
+                    body: commentText,
+                    PARENT_COMMENT_UUID : parentComment || ""
                 }
             );
             setCommentText('');
@@ -54,10 +55,11 @@ const CommentModal = ({show, handleClose}) => {
 return (
 <>
 <Modal show={show} onHide={handleClose} centered>
-    <Modal.Header closeButton>
+    <Modal.Header onClick={()=>setParentComment('')}closeButton>
         <Modal.Title>Add a Comment</Modal.Title>
     </Modal.Header>
     <Modal.Body>
+        <p>{parentComment? parentComment:''}</p>
         <p>Login Status: {JSON.stringify(status)}</p>
         <p>Node Context: {JSON.stringify(node, null, 2)}</p>
         {alert}

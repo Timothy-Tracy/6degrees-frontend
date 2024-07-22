@@ -9,7 +9,7 @@ import TimeAgo from "../../tools/TimeAgo";
 import { useNode } from "../../context/NodeContext.js";
 import CommentModal from "./interactions/CommentModal.js";
 
-const CommentObj = memo(function CommentObj({ COMMENT_UUID }) {
+const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply }) {
     const [comment, setComment] = useState(null);
     const [showChildComments, setShowChildComments] = useState(false);
     const { APIObj } = useAPI();
@@ -35,18 +35,27 @@ const CommentObj = memo(function CommentObj({ COMMENT_UUID }) {
                     </Col>
                 </Row>
                 <Row><p>{comment.body}</p></Row>
+                <Row>
+                <Col>
+                            <Button onClick={()=>{setParentComment(comment.COMMENT_UUID); handleReply()}}>
+                                Reply
+                            </Button>
+                        </Col>
                 {comment.childComments?.length > 0 && (
-                    <Row>
+                   
                         <Col>
                             <Button onClick={() => setShowChildComments(!showChildComments)}>
                                 {showChildComments ? "Hide" : "Load"} Replies
                             </Button>
                         </Col>
-                    </Row>
+                        
+                    
                 )}
+                </Row>
                 {showChildComments && comment.childComments?.map(childCommentUUID => (
-                    <CommentObj key={childCommentUUID} COMMENT_UUID={childCommentUUID} />
+                    <CommentObj key={childCommentUUID} COMMENT_UUID={childCommentUUID} handleReply={handleReply} setParentComment={(pc)=>setParentComment(pc)}/>
                 ))}
+                
             </Card>
         </Row>
     );
@@ -58,6 +67,8 @@ const PostPage = () => {
     const { query } = useParams();
     const [postData, setPostData] = useState({});
     const [commentData, setCommentData] = useState([]);
+    const [parentComment, setParentComment] = useState(null);
+
     const { prevNode, setPrevNode } = useNode();
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);
@@ -110,9 +121,9 @@ const PostPage = () => {
                 </Card>
             )}
             {commentData?.map((element, index) => (
-                <CommentObj key={element} COMMENT_UUID={element} />
+                <CommentObj key={element} COMMENT_UUID={element} setParentComment={(pc)=>setParentComment(pc) } handleReply={handleShow}/>
             ))}
-            <CommentModal show={showModal} handleClose={handleClose}></CommentModal>
+            <CommentModal show={showModal} handleClose={handleClose} parentComment={parentComment} setParentComment={(pc)=>setParentComment(pc) }></CommentModal>
             </>
     );
 };

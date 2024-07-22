@@ -45,7 +45,7 @@ const ThemeRoutes = [
     element: <Suspense fallback={<div>Loading...</div>}><FullLayout /></Suspense>,
     children: [
       { path: "/", element: <Navigate to="/store" /> },
-      { path: "/posts/:query", element: <NodeProvider><PostPage></PostPage></NodeProvider> },
+      { path: "/posts/:query", element:<NodeProvider><PostPage></PostPage></NodeProvider>},
       { path: "/checkout", element: <CheckoutPage /> },
 
       { path: "/ivan",  element: <Ivan /> },
