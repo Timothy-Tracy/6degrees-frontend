@@ -25,7 +25,7 @@ function timeAgo(dateString) {
   }
   
   function TimeAgo({ dateString }) {
-    console.log(dateString)
+    
     return (
       <time dateTime={dateString}>
         {timeAgo(dateString)}

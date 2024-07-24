@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import "./assets/scss/style.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import Loader from "./layouts/loader/Loader";
 import { UserProvider, useUser } from "./context/UserContext";
 import { DebugProvider } from "./context/DebugContext";
@@ -15,6 +15,8 @@ import {
 import { APIProvider } from "./context/APIContext";
 import { ErrorProvider } from './context/ErrorContext';
 import ErrorBoundary from './errors/ErrorBoundary';
+import { LoginModalProvider } from './components/ui/auth/LoginModalContext';
+import LoginModal from './components/ui/auth/LoginModal';
 const queryClient = new QueryClient();
 const {refreshUserContext} = useUser;
 
@@ -27,13 +29,19 @@ root.render(
   <Suspense fallback={<Loader />}>
   <ErrorProvider>
   <ErrorBoundary>
-    <HashRouter>
+    
+    <BrowserRouter>
       
         <DebugProvider>
           <APIProvider>
             <UserProvider>
               {refreshUserContext}
-              <App />
+              <LoginModalProvider>
+      {/* Your other app components */}
+      <LoginModal />
+      <App />
+    </LoginModalProvider>
+              
 
             </UserProvider>
           </APIProvider>
@@ -41,7 +49,7 @@ root.render(
         </DebugProvider>
       
 
-    </HashRouter>
+    </BrowserRouter>
     </ErrorBoundary>
     </ErrorProvider>
   </Suspense>

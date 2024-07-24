@@ -4,6 +4,9 @@ import React, { Suspense } from "react";
 import { ItemPage } from '../components/ui/ItemPage';
 import OrderSuccess from "../components/ui/OrderSuccess";
 import { NodeProvider } from "../context/NodeContext.js";
+import { useLoginModal } from "../components/ui/auth/LoginModalContext.js";
+
+
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -17,7 +20,12 @@ const OrderPage = lazy(() => import("../components/ui/Orders.js"));
 const Login = lazy(() => import("../components/ui/auth/Login.js"));
 
 const ShoppingCartPage = lazy(() => import("../components/ui/ShoppingCart.js"));
-
+const LoginModal = () => {
+  const {openModal} = useLoginModal()
+  return (
+    <>{openModal()}</>
+  )
+}
 
 
 
@@ -52,7 +60,7 @@ const ThemeRoutes = [
 
       { path: "/orders",  element: <OrderPage /> },
 
-      { path: "/login",  element: <Login /> },
+      { path: "/login",  element: <Login/> },
 
 
       { path: "/shoppingcart",  element: <ShoppingCartPage /> },

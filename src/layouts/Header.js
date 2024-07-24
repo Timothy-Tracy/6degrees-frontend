@@ -16,6 +16,7 @@ import user1 from "../assets/images/users/user1.jpg";
 import { useUser } from '../context/UserContext';
 import { useDebug } from "../context/DebugContext";
 import { useAPI } from '../context/APIContext';
+import { useLoginModal } from "../components/ui/auth/LoginModalContext";
 
 const Header = () => {
   const { status, logout, isAdmin, user } = useUser();
@@ -25,7 +26,7 @@ const Header = () => {
   const { setAPIMode, APIMode } = useAPI();
   const { debug } = useDebug();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-
+  const {openModal}= useLoginModal()
   const AdminTest = () => {
     if (isAdmin) {
       return (
@@ -39,10 +40,8 @@ const Header = () => {
   }
 
   const LoginButtonObject = (
-      <Button>
-        <Link to="/login" className="nav-link">
-          Login
-        </Link>
+      <Button onClick={() => openModal()}>
+        Login
       </Button>
   );
 
@@ -113,7 +112,7 @@ const Header = () => {
   }, [user, status, isAdmin]); // Include isAdmin in the dependency array
 
   return (
-      <Navbar color="primary" dark expand="xs">
+      <Navbar className='border-bottom' sticky='top' color="black" dark expand="xs">
         <Collapse navbar isOpen={isOpen}>
           <Nav className="me-auto" navbar>
             <NavItem>

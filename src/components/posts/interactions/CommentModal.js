@@ -3,7 +3,7 @@ import { useAPI } from "../../../context/APIContext"
 import { useParams } from 'react-router-dom';
 import { useGlobalError } from '../../../context/ErrorContext';
 import { Card, Button, Modal, Form } from 'react-bootstrap'
-import { Col, Row } from "reactstrap";
+import { CloseButton, Col, Row } from "reactstrap";
 import GlobalErrorComponent from "../../../errors/GlobalErrorComponent";
 import TimeAgo from "../../../tools/TimeAgo";
 import { useNode } from "../../../context/NodeContext.js";
@@ -55,9 +55,16 @@ const CommentModal = ({show, handleClose, parentComment, setParentComment}) => {
 return (
 <>
 <Modal show={show} onHide={handleClose} centered>
-    <Modal.Header onClick={()=>setParentComment('')}closeButton>
+    
+        <Modal.Header >
+        
         <Modal.Title>Add a Comment</Modal.Title>
-    </Modal.Header>
+        <CloseButton onClick={()=>{setParentComment(''); handleClose()}} className='justify-content-end' variant='white'></CloseButton>
+        </Modal.Header>
+  
+    
+        
+    
     <Modal.Body>
         <p>{parentComment? parentComment:''}</p>
         <p>Login Status: {JSON.stringify(status)}</p>

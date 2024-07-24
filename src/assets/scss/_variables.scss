@@ -1,19 +1,21 @@
 /*******************/
 // Theme Fonts
 /********************/
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap");
-$font-family-sans-serif: "Nunito", sans-serif;
+// @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+//$font-family-sans-serif: "Playfair Display", serif;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+$font-family-sans-serif: "Montserrat", sans-serif;
 /*******************/
 // Theme Colors
 /********************/
-$primary: #2962ff;
-$info: #3699ff;
+$primary: #1C41B0;
+$info: #4A4A4A;
 $danger: #f64e60;
 $success: #0bb7af;
 $warning: #ee9d01;
-$dark: #343a40;
-$light: #eaf2fb;
-$secondary: #35363b;
+$dark: #0A0A0A;
+$light: #F5F5F5;
+$secondary: #1E305C;
 
 $theme-colors: (
   "primary": $primary,
@@ -31,7 +33,7 @@ $theme-colors: (
   "light-danger": #f8dddd,
 );
 // scss-docs-start gray-color-variables
-$white: #fff !default;
+$white: #F5F5F5 !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #eef5f9 !default;
 $gray-300: #dee2e6 !default;
@@ -41,7 +43,7 @@ $gray-600: #757e85 !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #1e2a35 !default;
-$black: #000 !default;
+$black: #0A0A0A !default;
 
 /*******************/
 // Theme Text Contrast
@@ -51,8 +53,8 @@ $min-contrast-ratio: 2;
 /*******************/
 // Theme body bg & text color
 /********************/
-$body-bg: $gray-200 !default;
-$body-color: $gray-900 !default;
+$body-bg: $black !default;
+$body-color: $white !default;
 
 /*******************/
 // Theme common variable
@@ -64,13 +66,14 @@ $headings-font-weight: 600 !default;
 $card-border-width: 0 !default;
 $card-box-shadow: $box-shadow !default;
 $grid-gutter-width: 1.85rem !default;
-$card-bg: $white;
+$card-bg: $black;
 
 $input-bg: $white !default;
+$input-color: $black !default;
 $list-group-bg:$white !default;
 $table-bg:$white !default;
-$dropdown-bg:$white !default;
-
+$dropdown-bg:$black !default;
+$close-button-color: $white !default;
 /*******************/
 // Theme btn
 /********************/

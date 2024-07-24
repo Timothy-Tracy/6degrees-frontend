@@ -2,60 +2,72 @@ import React, { useEffect, useState, useCallback, memo } from "react";
 import { useAPI } from "../../context/APIContext"
 import { useParams } from 'react-router-dom';
 import { useGlobalError } from '../../context/ErrorContext';
-import { Card, Button, Modal, Form } from 'react-bootstrap'
+import { Card, Button, Badge } from 'reactstrap'
 import { Col, Row } from "reactstrap";
 import GlobalErrorComponent from "../../errors/GlobalErrorComponent";
 import TimeAgo from "../../tools/TimeAgo";
 import { useNode } from "../../context/NodeContext.js";
 import CommentModal from "./interactions/CommentModal.js";
 
-const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply }) {
+const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply, show }) {
     const [comment, setComment] = useState(null);
     const [showChildComments, setShowChildComments] = useState(false);
     const { APIObj } = useAPI();
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    useEffect(() => {
-        let isMounted = true;
+    const fetchComment = useCallback(() => {
+        
+        if (isLoaded) return;
+        
         APIObj.get(`/api/comments/${COMMENT_UUID}`)
             .then(response => {
-                if (isMounted) setComment(response.data.data);
+                setComment(response.data.data);
+                setIsLoaded(true);
             })
             .catch(console.error);
-        return () => { isMounted = false; };
-    }, [COMMENT_UUID, APIObj]);
+    }, [COMMENT_UUID, APIObj, isLoaded]);
+
+    useEffect(() => {
+        if(show){
+            fetchComment();
+        }
+        
+    }, [fetchComment, show]);
 
     if (!comment) return null;
 
     return (
-        <Row className="p-3">
-            <Card className='p-3'>
+        <Row style={{ display: show ? 'block' : 'none' }} className="p-3">
+            <Card color='light' outline className='p-3'>
                 <Row>
                     <Col>
-                        <p>@{comment.username} <TimeAgo dateString={comment.createdAt} /> {comment.COMMENT_UUID} Replies: {comment.repliesCount?.low ?? " "}</p>
+                        <p>@{comment.username} - <TimeAgo dateString={comment.createdAt} /> </p>
                     </Col>
                 </Row>
                 <Row><p>{comment.body}</p></Row>
                 <Row>
-                <Col>
-                            <Button onClick={()=>{setParentComment(comment.COMMENT_UUID); handleReply()}}>
-                                Reply
+                    <Col className='mx-1 text-center' xs='2' sm='1'>
+                        <Button className="btn" color='secondary' onClick={() => { setParentComment(comment.COMMENT_UUID); handleReply(); }}>
+                            Reply
+                        </Button>
+                    </Col>
+                    {comment.childComments?.length > 0 && (
+                        <Col className='mx-1'>
+                            <Button className="btn" color='secondary' onClick={() => setShowChildComments(!showChildComments)}>
+                                {showChildComments ? "Hide" : "Load"} Replies <Badge color="secondary">{comment.repliesCount?.low ?? " "}</Badge>
                             </Button>
                         </Col>
-                {comment.childComments?.length > 0 && (
-                   
-                        <Col>
-                            <Button onClick={() => setShowChildComments(!showChildComments)}>
-                                {showChildComments ? "Hide" : "Load"} Replies
-                            </Button>
-                        </Col>
-                        
-                    
-                )}
+                    )}
                 </Row>
-                {showChildComments && comment.childComments?.map(childCommentUUID => (
-                    <CommentObj key={childCommentUUID} COMMENT_UUID={childCommentUUID} handleReply={handleReply} setParentComment={(pc)=>setParentComment(pc)}/>
+                {comment.childComments?.map(childCommentUUID => (
+                    <CommentObj 
+                        show={showChildComments}
+                        key={childCommentUUID} 
+                        COMMENT_UUID={childCommentUUID} 
+                        handleReply={handleReply} 
+                        setParentComment={(pc) => setParentComment(pc)}
+                    />
                 ))}
-                
             </Card>
         </Row>
     );
@@ -68,12 +80,11 @@ const PostPage = () => {
     const [postData, setPostData] = useState({});
     const [commentData, setCommentData] = useState([]);
     const [parentComment, setParentComment] = useState(null);
-
+    const [nodePath, setNodePath] = useState(null)
     const { prevNode, setPrevNode } = useNode();
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-
 
     const fetchPostData = useCallback(async () => {
         try {
@@ -87,13 +98,25 @@ const PostPage = () => {
             setGlobalError(error);
         }
     }, [APIObj, query, setGlobalError, setPrevNode]);
+    const fetchDistributionPath = useCallback(async () => {
+        try {
+            const response = await APIObj.get(`/api/nodes/path/${query}`);
+            console.log('fetching path')
+            console.log(response)
+            if (response.status === 200) {
 
+                setNodePath(response.data.nodes.reverse());
+                
+            }
+        } catch (error) {
+            setGlobalError(error);
+        }
+    }, [setNodePath]);
     useEffect(() => {
         fetchPostData();
-    }, [fetchPostData]);
-    
+        fetchDistributionPath()
+    }, [fetchPostData, fetchDistributionPath]);
 
-    
     return (
         <>
             <GlobalErrorComponent />
@@ -108,23 +131,45 @@ const PostPage = () => {
                     <span>Views: {postData.views?.low ?? ''} Shares: {postData.shares?.low ?? ''} Comments: {postData.comments?.low ?? ''}</span>
                 </Row>
                 <Row>
-                    <Col xs={6}><Button onClick={handleShow}>Respond</Button></Col>
-                    <Col xs={6}><Button>Share</Button></Col>
+                    <Col xs={6}><Button className="btn" color="primary" size="lg" block onClick={handleShow}>Respond</Button></Col>
+                    <Col xs={6}><Button className="btn" color="primary" size="lg" block>Share</Button></Col>
                 </Row>
             </Card>
             {prevNode && (
                 <Card>
-                    <Row>
-                        <p>You are coming here from node {prevNode.NODE_UUID || ''}</p>
-                        <p>{prevNode.user.firstName} {prevNode.user.lastName}, @{prevNode.user.username || ''} shared it with you</p>
+                    
+                        <h5>Distribution Path</h5>
+                        <Row className='text-center'>
+                        <p>
+                            {
+                                
+                                nodePath?.map((node)=>{
+                                    console.log('hi')
+                                    return(<span>@{node.username} -- </span>)
+                                })
+                            }
+                            <span>You</span>
+                        </p>
                     </Row>
                 </Card>
             )}
-            {commentData?.map((element, index) => (
-                <CommentObj key={element} COMMENT_UUID={element} setParentComment={(pc)=>setParentComment(pc) } handleReply={handleShow}/>
+            <h5>Comments</h5>
+            {commentData?.map((element) => (
+                <CommentObj 
+                    show={true}
+                    key={element} 
+                    COMMENT_UUID={element} 
+                    setParentComment={(pc) => setParentComment(pc)} 
+                    handleReply={handleShow}
+                />
             ))}
-            <CommentModal show={showModal} handleClose={handleClose} parentComment={parentComment} setParentComment={(pc)=>setParentComment(pc) }></CommentModal>
-            </>
+            <CommentModal 
+                show={showModal} 
+                handleClose={handleClose} 
+                parentComment={parentComment} 
+                setParentComment={(pc) => setParentComment(pc)}
+            />
+        </>
     );
 };
 

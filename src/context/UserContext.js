@@ -1,4 +1,3 @@
-// UserContext.js
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { useEffect } from 'react';
 import { useDebug } from './DebugContext';
@@ -12,44 +11,71 @@ const UserProvider = ({ children }) => {
   const { globalError, setError: setGlobalError } = useGlobalError();
   const { APIObj } = useAPI();
 
-  const [user, setUser] = useState(null);
-  const [status, setStatus] = useState(false);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [status, setStatus] = useState(() => {
+    return localStorage.getItem('userStatus') === 'true';
+  });
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const refreshUserContext = useCallback(async () => {
-    debug('refreshing user context');
-    try {
-      const response = await APIObj.get('/api/auth/verify');
-      if (response.status === 200) {
-        setStatus(true);
-        setUser(response.data);
+  const refreshUserContext = useCallback(async (force = false) => {
+    const currentTime = Date.now();
+    const lastRefreshTime = parseInt(localStorage.getItem('lastUserRefresh') || '0');
+    const refreshInterval = 5 * 60 * 1000; // 5 minutes
+
+    if (force || currentTime - lastRefreshTime > refreshInterval) {
+      debug('refreshing user context');
+      try {
+        const response = await APIObj.get('/api/auth/verify');
+        if (response.status === 200) {
+          setUser(response.data);
+          setStatus(true);
+          localStorage.setItem('user', JSON.stringify(response.data));
+          localStorage.setItem('userStatus', 'true');
+          localStorage.setItem('lastUserRefresh', currentTime.toString());
+        }
+      } catch (error) {
+        logout();
       }
-    } catch (error) {
-      setGlobalError(error);
-      logout();
+    } else {
+      debug('skipping user context refresh');
     }
-  }, [APIObj, debug, setGlobalError]);
+  }, [APIObj, debug]);
 
   const login = useCallback((userData) => {
     setUser(userData);
     setStatus(true);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userStatus', 'true');
+    localStorage.setItem('lastUserRefresh', Date.now().toString());
   }, []);
 
   const logout = useCallback(async () => {
-    
-    try {
-      const response = await APIObj.post('/api/auth/logout');
-      if (response.status === 200) {
-        setUser(null);
-        setStatus(false);
-        setIsAdmin(false);
+    if(status){
+      debug('Logging Out')
+      try {
+        const response = await APIObj.post('/api/auth/logout');
+        if (response.status === 200) {
+          setUser(null);
+          setStatus(false);
+          setIsAdmin(false);
+          localStorage.removeItem('user');
+          localStorage.removeItem('userStatus');
+          localStorage.removeItem('lastUserRefresh');
+        }
+      } catch (error) {
+        // Handle error
       }
-    } catch (error) {
-      setGlobalError(error);
-      
     }
-    // Note: You might need to call an API endpoint to clear the cookie on the server
-  }, []);
+  }, [APIObj, debug, status]);
+
+  useEffect(() => {
+    if (status) {
+      refreshUserContext();
+    }
+  }, []); // Only run on mount if the user is logged in
 
   useEffect(() => {
     if (user?.role === 'ADMIN' && status) {
@@ -58,10 +84,6 @@ const UserProvider = ({ children }) => {
       setIsAdmin(false);
     }
   }, [user, status]);
-
-  useEffect(() => {
-    refreshUserContext();
-  }, []); // Only run on mount
 
   const value = useMemo(() => ({
     user,
