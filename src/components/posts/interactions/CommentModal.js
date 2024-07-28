@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
-import { useAPI } from "../../../context/APIContext"
+import { useAPI } from "../../context/APIContext"
+import { useNode } from "../../context/NodeContext.js";
+import { useUser } from "../../context/UserContext.js";
 import { useParams } from 'react-router-dom';
-import { useGlobalError } from '../../../context/ErrorContext';
-import { Card, Button, Modal, Form } from 'react-bootstrap'
-import { CloseButton, Col, Row } from "reactstrap";
+import { useGlobalError } from '../../context/ErrorContext';
+import { Card, Button, Modal,   FormLabel, FormControl } from 'react-bootstrap'
+import { CloseButton, Col, FormGroup, ModalBody, ModalHeader, Row, Form } from "reactstrap";
 import GlobalErrorComponent from "../../../errors/GlobalErrorComponent";
 import TimeAgo from "../../../tools/TimeAgo";
-import { useNode } from "../../../context/NodeContext.js";
-import { useUser } from "../../../context/UserContext.js";
 
-const CommentModal = ({show, handleClose, parentComment, setParentComment}) => {
-    const { prevNode, setPrevNode, node, setNode } = useNode();
+
+const CommentModal = ({show, handleClose, parentComment, setParentComment, node}) => {
+    
     const { APIObj } = useAPI();
     const { query } = useParams();
 
@@ -36,56 +37,50 @@ const CommentModal = ({show, handleClose, parentComment, setParentComment}) => {
         }
     };
 
-    if(!node){
-        if(status){
-            console.log('interacting with node')
-            const response = APIObj.get(`/api/nodes/interact/${query}`)
-            .then(response => {
-                console.log(response)
-                setNode(response.data.node)
-            })
-        }
-        
-    }
+    
     useEffect(()=>{
         console.log(show)
         console.log('showmodal state change')
     },[show])
 
+
+    useEffect(()=>{
+  
+    }, [])
 return (
 <>
 <Modal show={show} onHide={handleClose} centered>
     
-        <Modal.Header >
+        <ModalHeader >
         
-        <Modal.Title>Add a Comment</Modal.Title>
+        <h3>Add a Comment</h3>
         <CloseButton onClick={()=>{setParentComment(''); handleClose()}} className='justify-content-end' variant='white'></CloseButton>
-        </Modal.Header>
+        </ModalHeader>
   
     
         
     
-    <Modal.Body>
+    <ModalBody>
         <p>{parentComment? parentComment:''}</p>
         <p>Login Status: {JSON.stringify(status)}</p>
         <p>Node Context: {JSON.stringify(node, null, 2)}</p>
         {alert}
         <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="commentText">
-                <Form.Label>Your Comment</Form.Label>
-                <Form.Control 
+            <FormGroup className="mb-3" controlId="commentText">
+                <FormLabel>Your Comment</FormLabel>
+                <FormControl 
                     as="textarea" 
                     rows={3} 
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     required
                 />
-            </Form.Group>
+            </FormGroup>
             <Button variant="primary" type="submit">
                 Submit Comment
             </Button>
         </Form>
-    </Modal.Body>
+    </ModalBody>
 </Modal>
 </>)
 };

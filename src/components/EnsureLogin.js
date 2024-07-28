@@ -2,8 +2,8 @@ import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Alert } from 'reactstrap';
 //Importing Contexts 
-import { useUser } from "../context/UserContext";
-import { useDebug } from "../context/DebugContext";
+import { useUser } from "./context/UserContext";
+import { useDebug } from "./context/DebugContext";
 import APIModeAlert from "./APIModeAlert";
 
 // Description & Documentation

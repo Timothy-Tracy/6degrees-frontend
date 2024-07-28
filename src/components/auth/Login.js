@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardTitle, CardBody, Button, Form, FormGroup, Label, Input, Container, Alert } from 'reactstrap';
-import { useUser } from '../../../context/UserContext';
-import { useAPI } from '../../../context/APIContext';
+import { useUser } from '../context/UserContext';
+import { useAPI } from '../context/APIContext';
 import axios from 'axios';
-import APIModeAlert from '../../APIModeAlert';
+import APIModeAlert from '../APIModeAlert';
 
-import useError from '../../../hooks/useError';
-import { useGlobalError } from '../../../context/ErrorContext';
-import withAsyncErrorHandler from '../../../errors/withAsyncErrorHandler';
+import useError from '../../hooks/useError';
+import { useGlobalError } from '../context/ErrorContext';
+import withAsyncErrorHandler from '../../errors/withAsyncErrorHandler';
 const Login = () => {
     const { error, handleError, clearError, ErrorMessageComponent } = useError();
     const { globalError, setError: setGlobalError, clearError: clearGlobalError } = useGlobalError();

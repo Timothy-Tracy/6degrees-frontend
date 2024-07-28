@@ -1,6 +1,6 @@
 // src/components/GlobalErrorComponent.js
 import React from 'react';
-import { useGlobalError } from '../context/ErrorContext';
+import { useGlobalError } from '../components/context/ErrorContext';
 import { useState } from 'react';
 import {Alert, Button} from 'react-bootstrap';
 

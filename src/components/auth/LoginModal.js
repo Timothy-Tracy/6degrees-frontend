@@ -1,10 +1,10 @@
 // LoginModal.js
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import { useUser } from '../../../context/UserContext';
-import { useAPI } from '../../../context/APIContext';
+import { useUser } from '../context/UserContext';
+import { useAPI } from '../context/APIContext';
 import { useLoginModal } from './LoginModalContext';
-import APIModeAlert from '../../APIModeAlert';
+
 
 const LoginModal = () => {
     const { login, newStatus } = useUser();
@@ -87,7 +87,6 @@ const LoginModal = () => {
         <Modal isOpen={isModalOpen} toggle={handleClose}>
             <ModalHeader toggle={closeModal}>{createAccountMode ? "Create Account" : "Login"}</ModalHeader>
             <ModalBody>
-                <APIModeAlert />
                 {message && <Alert color={messageType}>{message}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>

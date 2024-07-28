@@ -6,17 +6,21 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, HashRouter } from "react-router-dom";
 import Loader from "./layouts/loader/Loader";
-import { UserProvider, useUser } from "./context/UserContext";
-import { DebugProvider } from "./context/DebugContext";
+import { UserProvider, useUser } from "./components/context/UserContext";
+import { DebugProvider } from "./components/context/DebugContext";
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { APIProvider } from "./context/APIContext";
-import { ErrorProvider } from './context/ErrorContext';
+import { APIProvider } from "./components/context/APIContext";
+import { ErrorProvider } from './components/context/ErrorContext';
 import ErrorBoundary from './errors/ErrorBoundary';
-import { LoginModalProvider } from './components/ui/auth/LoginModalContext';
-import LoginModal from './components/ui/auth/LoginModal';
+import { LoginModalProvider } from './components/auth/LoginModalContext';
+import LoginModal from './components/auth/LoginModal';
+import { NodeProvider } from "./components/context/NodeContext";
+
+import { NotificationProvider } from './components/context/NotificationContext.js';
+import NotificationContainer from './components/notifications/NotificationContainer.js';
 const queryClient = new QueryClient();
 const {refreshUserContext} = useUser;
 
@@ -35,14 +39,18 @@ root.render(
         <DebugProvider>
           <APIProvider>
             <UserProvider>
+              <NotificationProvider>
               {refreshUserContext}
               <LoginModalProvider>
       {/* Your other app components */}
       <LoginModal />
+      <NotificationContainer/>
       <App />
+      
+      
     </LoginModalProvider>
               
-
+    </NotificationProvider>
             </UserProvider>
           </APIProvider>
 

@@ -14,21 +14,21 @@ import {
     Label,
     Form
 } from "reactstrap";
-import { useUser } from "../../context/UserContext";
+import { useUser } from "../context/UserContext.js";
 import { useState, useEffect } from "react";
 import axios from 'axios'; // NOTE FOR TIM : Import axios for making HTTP requests
-import EnsureLogin from "../../components/EnsureLogin";
-import { useDebug } from "../../context/DebugContext";
-import APIModeAlert from "../APIModeAlert";
-import { useAPI } from "../../context/APIContext";
+import EnsureLogin from "../EnsureLogin.js";
+import { useDebug } from "../context/DebugContext.js";
+import APIModeAlert from "../APIModeAlert.js";
+import { useAPI } from "../context/APIContext.js";
 import Forms from "../../tools/Forms.js"
 import UserObjSchemas from '../../schemas/UserObjSchemas.js'
 import UserValidation from "../../validation/UserValidation.js";
 
-import useError from '../../hooks/useError';
-import { useGlobalError } from '../../context/ErrorContext';
-import withAsyncErrorHandler from '../../errors/withAsyncErrorHandler';
-import{InputValidationError} from '../../errors/customErrors'
+import useError from '../../hooks/useError.js';
+import { useGlobalError } from '../context/ErrorContext.js';
+import withAsyncErrorHandler from '../../errors/withAsyncErrorHandler.js';
+import{InputValidationError} from '../../errors/customErrors.js'
 
 export const AccountInfoObject = (props) => {
     

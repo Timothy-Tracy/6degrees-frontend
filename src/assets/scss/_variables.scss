@@ -84,3 +84,28 @@ $btn-focus-width: 0px;
 /********************/
 $sidebarWidth: 260px;
 $sidebarColor: $white;
+$container-padding-x:                   0rem;
+$container-padding-y:                   0rem;
+$container-margin-x:                   0rem;
+$container-margin-y:                   0rem;
+$container-border-width:                1px;
+$container-border-radius:               $border-radius;
+
+//TOASTS
+$toast-max-width:                   350px;
+$toast-padding-x:                   .75rem;
+$toast-padding-y:                   .5rem;
+$toast-font-size:                   .875rem;
+$toast-color:                       $dark;
+$toast-background-color:            rgba($white, .85);
+$toast-border-width:                0px;
+$toast-border-color:                rgba($black, .1);
+$toast-border-radius:               $border-radius;
+$toast-box-shadow:                  $box-shadow;
+$toast-spacing:                     $container-padding-x;
+
+$toast-header-color:                $gray-600;
+$toast-header-background-color:     rgba($white, .85);
+$toast-header-border-color:         rgba($black, .05);
+
+

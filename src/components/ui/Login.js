@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardTitle, CardBody, Button, Form, FormGroup, Label, Input, Container, Alert } from 'reactstrap';
-import { useUser } from '../../context/UserContext';
-import { useAPI } from '../../context/APIContext';
+import { useUser } from '../context/UserContext';
+import { useAPI } from '../context/APIContext';
 import axios from 'axios';
 import APIModeAlert from '../APIModeAlert';
 

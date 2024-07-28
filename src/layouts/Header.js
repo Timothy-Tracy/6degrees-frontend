@@ -13,10 +13,10 @@ import {
   Col,
 } from "reactstrap";
 import user1 from "../assets/images/users/user1.jpg";
-import { useUser } from '../context/UserContext';
-import { useDebug } from "../context/DebugContext";
-import { useAPI } from '../context/APIContext';
-import { useLoginModal } from "../components/ui/auth/LoginModalContext";
+import { useUser } from '../components/context/UserContext';
+import { useDebug } from "../components/context/DebugContext";
+import { useAPI } from '../components/context/APIContext';
+import { useLoginModal } from "../components/auth/LoginModalContext";
 
 const Header = () => {
   const { status, logout, isAdmin, user } = useUser();
@@ -45,20 +45,13 @@ const Header = () => {
       </Button>
   );
 
-  const ShoppingCartButtonObject = (
-      <Button className="btn-success">
-        <Link to="/shoppingcart" className="nav-link ">
-          Shopping Cart
-        </Link>
-      </Button>
-  );
+
 
   //If the user login status is false, do not show the account dropdown menu
   //If the login status is true, show the account dropdown menu with logout button
   //Utilizes UserContext
 
   const [LoginButton, setLoginButton] = useState(LoginButtonObject);
-  const [ShoppingCartButton, setShoppingCartButton] = useState(ShoppingCartButtonObject);
 
   useEffect(() => {
     if (status) {
@@ -79,11 +72,7 @@ const Header = () => {
                   Settings
                 </Link>
               </DropdownItem>
-              <DropdownItem>
-                <Link to="/orders" className="nav-link">
-                  Orders
-                </Link>
-              </DropdownItem>
+              
               {isAdmin && (
                   <DropdownItem>
                     <Link to="/admin" className="nav-link">
@@ -99,15 +88,13 @@ const Header = () => {
       debug("AccountMenu SHOWN")
       setLoginButton(<div></div>)
       debug("LoginButton HIDDEN")
-      setShoppingCartButton(ShoppingCartButtonObject)
-      debug("ShoppingCartButton SHOWN")
+     
     } else {
       setAccountMenu(<div></div>)
       debug("AccountMenu HIDDEN")
       setLoginButton(LoginButtonObject)
       debug("LoginButton SHOWN")
-      setShoppingCartButton(<div></div>)
-      debug("ShoppingCartButton HIDDEN")
+   
     }
   }, [user, status, isAdmin]); // Include isAdmin in the dependency array
 
@@ -116,27 +103,11 @@ const Header = () => {
         <Collapse navbar isOpen={isOpen}>
           <Nav className="me-auto" navbar>
             <NavItem>
-              <Link to="/store" className="nav-link">
-                Store
+              <Link to="/profile" className="nav-link">
+                Profile
               </Link>
             </NavItem>
-            {/*<NavItem className="me-auto" navbar>*/}
-            {/*  <Button onClick={() => { setAPIMode(!APIMode); logout(); }}>*/}
-            {/*    API Mode:{APIMode.toString()}*/}
-            {/*  </Button>*/}
-            {/*</NavItem>*/}
-        {/*  <NavItem>*/}
-        {/*      <Link className="nav-link">*/}
-        {/*        <AdminTest>*/}
-
-        {/*        </AdminTest>*/}
-        {/*      </Link>*/}
-        {/*</NavItem>*/}
-
           </Nav>
-          <div>
-            {ShoppingCartButton}
-          </div>
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             {AccountMenu}
           </Dropdown>

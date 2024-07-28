@@ -1,36 +1,18 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import React, { Suspense } from "react";
-import { ItemPage } from '../components/ui/ItemPage';
-import OrderSuccess from "../components/ui/OrderSuccess";
-import { NodeProvider } from "../context/NodeContext.js";
-import { useLoginModal } from "../components/ui/auth/LoginModalContext.js";
-
-
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
-/***** Pages ****/
-const CheckoutPage = lazy(() => import("../components/ui/Checkout.js"));
-const Ivan = lazy(() => import("../components/ui/Ivan.js"));
-
-const OrderPage = lazy(() => import("../components/ui/Orders.js"));
-
-const Login = lazy(() => import("../components/ui/auth/Login.js"));
-
-const ShoppingCartPage = lazy(() => import("../components/ui/ShoppingCart.js"));
-const LoginModal = () => {
-  const {openModal} = useLoginModal()
-  return (
-    <>{openModal()}</>
-  )
-}
-
-
-
+/***** 6 Degrees Pages ****/
+const Login = lazy(() => import("../components/auth/Login.js"));
+const PostPage = lazy(() => import("../components/posts/PostPage.js")); // Added Admin Page
+const ProfilePage = lazy(() => import("../components/profile/ProfilePage.js"));
 const MyAccountPage = lazy(() => import("../components/ui/AccountSettings.js"));
-const Store = lazy(() => import("../components/ui/Store.js"));
+const CreatePostPage = lazy(() => import("../components/posts/create/CreatePostPage.js")); // Added Admin Page
+
+//Template
 const Starter = lazy(() => import("../views/Starter.js"));
 const About = lazy(() => import("../views/About.js"));
 const Alerts = lazy(() => import("../views/ui/Alerts"));
@@ -42,33 +24,20 @@ const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
 
-const AdminPage = lazy(() => import("../components/ui/Admin.js")); // Added Admin Page
-const PostPage = lazy(() => import("../components/posts/PostPage.js")); // Added Admin Page
-
 /*****Routes******/
-
 const ThemeRoutes = [
   {
     path: "/",
     element: <Suspense fallback={<div>Loading...</div>}><FullLayout /></Suspense>,
     children: [
-      { path: "/", element: <Navigate to="/store" /> },
-      { path: "/posts/:query", element:<NodeProvider><PostPage></PostPage></NodeProvider>},
-      { path: "/checkout", element: <CheckoutPage /> },
-
-      { path: "/ivan",  element: <Ivan /> },
-
-      { path: "/orders",  element: <OrderPage /> },
+      { path: "/", element: <Navigate to="/" /> },
+      { path: "/posts/:query", element:<PostPage></PostPage>},
+      { path: "/posts/create", element:<CreatePostPage></CreatePostPage>},
 
       { path: "/login",  element: <Login/> },
-
-
-      { path: "/shoppingcart",  element: <ShoppingCartPage /> },
-
-      { path: "/itempage/:id", element: <ItemPage /> },
-
+      { path: "/profile",  element: <ProfilePage/> },
       { path: "/settings",  element: <MyAccountPage /> },
-      { path: "/store",  element: <Store /> },
+      
       { path: "/starter",  element: <Starter /> },
       { path: "/about",  element: <About /> },
       { path: "/alerts",  element: <Alerts /> },
@@ -79,10 +48,6 @@ const ThemeRoutes = [
       { path: "/table",  element: <Tables /> },
       { path: "/forms",  element: <Forms /> },
       { path: "/breadcrumbs",  element: <Breadcrumbs /> },
-      { path: "/admin",  element: <AdminPage /> },
-
-      { path: "/order-success", element: <OrderSuccess /> },
-
     ],
   },
 ];

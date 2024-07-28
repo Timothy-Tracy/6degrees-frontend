@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { logError } from '../errors/errorLogger';
+import { logError } from '../../errors/errorLogger';
 
 const ErrorContext = createContext();
 
