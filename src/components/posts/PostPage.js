@@ -6,13 +6,28 @@ import { Card, Button, Badge } from 'reactstrap'
 import { Col, Row } from "reactstrap";
 import GlobalErrorComponent from "../../errors/GlobalErrorComponent";
 import TimeAgo from "../../tools/TimeAgo";
-
+import styles from './GraphVisualizer.modules.css';
 import CommentModal from "./interactions/CommentModal.js";
 import ShareButton from "./interactions/ShareButton.js";
 import useNode from "../../hooks/useNode.js";
 import useFetchNodeContextByQuery from "../../api/nodes/useFetchNodeContextByQuery.js";
 import { useUser } from "../context/UserContext.js";
-
+import { ForceGraph2D } from 'react-force-graph';
+let mydata = {
+    nodes: [
+      { id: '473', label: 'NODE 473' },
+      { id: '515', label: 'NODE 515' },
+      { id: '503', label: 'NODE 503' },
+      { id: '521', label: 'NODE 521' },
+      { id: '518', label: 'NODE 518' },
+    ],
+    links: [
+      { source: '473', target: '515', label: 'EDGE_FULFILLED' },
+      { source: '473', target: '503', label: 'EDGE_FULFILLED' },
+      { source: '503', target: '521', label: 'EDGE_FULFILLED' },
+      { source: '503', target: '518', label: 'EDGE_FULFILLED' },
+    ],
+  };
 const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply, show }) {
     const [comment, setComment] = useState(null);
     const [showChildComments, setShowChildComments] = useState(false);
@@ -76,7 +91,20 @@ const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setPa
         </Row>
     );
 });
-
+const GraphVisualizer = ({ data }) => {
+    return (
+      <ForceGraph2D
+        graphData={data}
+        nodeLabel="label"
+        nodeAutoColorBy="label"
+        linkDirectionalArrowLength={3.5}
+        linkDirectionalArrowRelPos={1}
+        linkCurvature={0.25}
+        width={window.innerWidth}
+        height={window.innerHeight}
+      />
+    );
+  };
 const PostPage = () => {
     const { setError: setGlobalError } = useGlobalError();
     const { APIObj } = useAPI();
@@ -185,6 +213,7 @@ const PostPage = () => {
                     </Row>
                 </Card>
             )}
+            <GraphVisualizer data={mydata}></GraphVisualizer>
             <h5>Comments</h5>
             {commentData?.map((element) => (
                 <CommentObj

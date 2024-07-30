@@ -3,6 +3,7 @@ import { logError } from '../errors/errorLogger';
 import { Alert } from 'react-bootstrap';
 import{InputValidationError} from '../errors/customErrors'
 import { useNotification } from '../components/context/NotificationContext';
+import { Button } from 'reactstrap';
 function useError() {
   const [error, setError] = useState(null);
   const {addNotification} = useNotification();
@@ -39,7 +40,8 @@ function useError() {
               sender: '6 Degrees Server Message',
               title:`${err.name} - ${err.statusCode}`,
               message : `${err.message} ${JSON.stringify(err.details,null,2)}`,
-              type:'danger'
+              type:'danger',
+              embed: (<Button>Button</Button>)
             })
         }
     } else {

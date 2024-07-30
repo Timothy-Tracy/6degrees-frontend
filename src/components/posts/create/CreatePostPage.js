@@ -30,7 +30,8 @@ const CreatePostPage = () => {
                 title: 'Successfully uploaded post',
                 message: '',
                 type: 'success',
-                icon: 'success'
+                icon: 'success',
+                embed: (<Button></Button>)
                 
             })
                 console.log('success')
