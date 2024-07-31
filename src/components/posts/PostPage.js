@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, memo } from "react";
+import React, { useEffect, useState, useCallback, memo, useRef } from "react";
 import { useAPI } from "../context/APIContext"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGlobalError } from '../context/ErrorContext';
@@ -12,22 +12,8 @@ import ShareButton from "./interactions/ShareButton.js";
 import useNode from "../../hooks/useNode.js";
 import useFetchNodeContextByQuery from "../../api/nodes/useFetchNodeContextByQuery.js";
 import { useUser } from "../context/UserContext.js";
-import { ForceGraph2D } from 'react-force-graph';
-let mydata = {
-    nodes: [
-      { id: '473', label: 'NODE 473' },
-      { id: '515', label: 'NODE 515' },
-      { id: '503', label: 'NODE 503' },
-      { id: '521', label: 'NODE 521' },
-      { id: '518', label: 'NODE 518' },
-    ],
-    links: [
-      { source: '473', target: '515', label: 'EDGE_FULFILLED' },
-      { source: '473', target: '503', label: 'EDGE_FULFILLED' },
-      { source: '503', target: '521', label: 'EDGE_FULFILLED' },
-      { source: '503', target: '518', label: 'EDGE_FULFILLED' },
-    ],
-  };
+import GraphVisualizer from "../graph/GraphVisualizer.js";
+
 const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply, show }) {
     const [comment, setComment] = useState(null);
     const [showChildComments, setShowChildComments] = useState(false);
@@ -91,20 +77,7 @@ const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setPa
         </Row>
     );
 });
-const GraphVisualizer = ({ data }) => {
-    return (
-      <ForceGraph2D
-        graphData={data}
-        nodeLabel="label"
-        nodeAutoColorBy="label"
-        linkDirectionalArrowLength={3.5}
-        linkDirectionalArrowRelPos={1}
-        linkCurvature={0.25}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      />
-    );
-  };
+
 const PostPage = () => {
     const { setError: setGlobalError } = useGlobalError();
     const { APIObj } = useAPI();
@@ -138,7 +111,7 @@ const PostPage = () => {
             setGlobalError(error);
         }
     }, [APIObj]);
-    const fetchDistributionPath = useCallback(async () => {
+    const fetchDistributionPath = async () => {
         if (isLoaded) {
             return;
         }
@@ -147,14 +120,14 @@ const PostPage = () => {
             console.log('fetching path')
             console.log(response)
             if (response.status === 200) {
-
-                setNodePath(response.data.nodes.reverse());
+                console.log(response.data)
+                setNodePath(response.data);
 
             }
         } catch (error) {
             setGlobalError(error);
         }
-    }, [APIObj]);
+    };
     useEffect(() => {
     if(node){
         console.log('node present')
@@ -171,8 +144,8 @@ const PostPage = () => {
     useEffect(() => {
         fetch()
         fetchPostData();
-        //fetchDistributionPath()
-    }, [fetchPostData, fetchDistributionPath, user]);
+        fetchDistributionPath()
+    }, [fetchPostData, user]);
 
     return (
         <>
@@ -213,8 +186,11 @@ const PostPage = () => {
                     </Row>
                 </Card>
             )}
-            <GraphVisualizer data={mydata}></GraphVisualizer>
-            <h5>Comments</h5>
+            <h4>Distribution Path</h4>
+               <GraphVisualizer  data={nodePath}></GraphVisualizer>
+              
+            
+            <h4>Comments</h4>
             {commentData?.map((element) => (
                 <CommentObj
                     show={true}
