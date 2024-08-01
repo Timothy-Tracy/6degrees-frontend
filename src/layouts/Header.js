@@ -11,12 +11,17 @@ import {
   Dropdown,
   Button,
   Col,
+  Container,
+  Input,
+  ButtonDropdown,
+  InputGroup,
 } from "reactstrap";
 import user1 from "../assets/images/users/user1.jpg";
 import { useUser } from '../components/context/UserContext';
 import { useDebug } from "../components/context/DebugContext";
 import { useAPI } from '../components/context/APIContext';
 import { useLoginModal } from "../components/auth/LoginModalContext";
+import HeaderSearchBar from "./HeaderSearchBar";
 
 const Header = () => {
   const { status, logout, isAdmin, user } = useUser();
@@ -26,7 +31,7 @@ const Header = () => {
   const { setAPIMode, APIMode } = useAPI();
   const { debug } = useDebug();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-  const {openModal}= useLoginModal()
+  const { openModal } = useLoginModal()
   const AdminTest = () => {
     if (isAdmin) {
       return (
@@ -40,9 +45,9 @@ const Header = () => {
   }
 
   const LoginButtonObject = (
-      <Button onClick={() => openModal()}>
-        Login
-      </Button>
+    <Button onClick={() => openModal()}>
+      Login
+    </Button>
   );
 
 
@@ -56,64 +61,92 @@ const Header = () => {
   useEffect(() => {
     if (status) {
       setAccountMenu(
-          <div>
-            <DropdownToggle color="primary">
-              <img
-                  src={user1}
-                  alt="profile"
-                  className="rounded-circle"
-                  width="30"
-              ></img>
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem header>Info</DropdownItem>
+        <div>
+          <DropdownToggle color="primary">
+            Menu
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem header>Info</DropdownItem>
+            <DropdownItem>
+              <Link to="/settings" className="nav-link">
+                Settings
+              </Link>
+            </DropdownItem>
+
+            {isAdmin && (
               <DropdownItem>
-                <Link to="/settings" className="nav-link">
-                  Settings
+                <Link to="/admin" className="nav-link">
+                  Admin Page
                 </Link>
               </DropdownItem>
-              
-              {isAdmin && (
-                  <DropdownItem>
-                    <Link to="/admin" className="nav-link">
-                      Admin Page
-                    </Link>
-                  </DropdownItem>
-              )}
-              <DropdownItem divider />
-              <DropdownItem onClick={() => logout()}>Logout</DropdownItem>
-            </DropdownMenu>
-          </div>
+            )}
+            <DropdownItem divider />
+            <DropdownItem onClick={() => logout()}>Logout</DropdownItem>
+          </DropdownMenu>
+        </div>
       );
       debug("AccountMenu SHOWN")
       setLoginButton(<div></div>)
       debug("LoginButton HIDDEN")
-     
+
     } else {
       setAccountMenu(<div></div>)
       debug("AccountMenu HIDDEN")
       setLoginButton(LoginButtonObject)
       debug("LoginButton SHOWN")
-   
+
     }
   }, [user, status, isAdmin]); // Include isAdmin in the dependency array
 
   return (
-      <Navbar className='border-bottom' sticky='top' color="black" dark expand="xs">
+    <Navbar className='border-bottom' sticky='top' color="black" dark expand="xs">
+      <Col lg={4}>
+
         <Collapse navbar isOpen={isOpen}>
           <Nav className="me-auto" navbar>
             <NavItem>
-              <Link to="/profile" className="nav-link">
+              <Container className='px-3'>
+                <Link to='/welcome'>
+
+                </Link><h1>6°</h1>
+
+              </Container>
+
+
+            </NavItem>
+            <NavItem>
+              <Link to="/profile" className="nav-link" >
                 Profile
               </Link>
             </NavItem>
+            <NavItem>
+              <Link to="/posts/create" className="nav-link">
+                Create Post
+              </Link>
+            </NavItem>
           </Nav>
+        </Collapse>
+      </Col>
+      <Col lg={4}>
+      <HeaderSearchBar></HeaderSearchBar>
+        
+        
+      </Col>
+      <Col>
+        <Container className='px-3 text-end'>
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             {AccountMenu}
           </Dropdown>
-          <div> {LoginButton} </div>
-        </Collapse>
-      </Navbar>
+
+          {LoginButton}
+        </Container>
+      </Col>
+
+
+
+
+
+    </Navbar>
   );
 };
 

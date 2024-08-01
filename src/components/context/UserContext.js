@@ -3,13 +3,17 @@ import { useEffect } from 'react';
 import { useDebug } from './DebugContext';
 import { useAPI } from "./APIContext";
 import { useGlobalError } from '../context/ErrorContext';
-
+import useError from '../../hooks/useError';
+import {LogoutNotification, LoginProgressNotification, LoginSuccessNotification} from '../notifications/auth/AuthNotifications'
+import { useNotification } from './NotificationContext';
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const { debug } = useDebug();
   const { globalError, setError: setGlobalError } = useGlobalError();
   const { APIObj } = useAPI();
+  const {addNotification, updateNotification} = useNotification();
+  const {handleError} = useError()
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user');
@@ -27,16 +31,20 @@ const UserProvider = ({ children }) => {
 
     if (force || currentTime - lastRefreshTime > refreshInterval) {
       debug('refreshing user context');
+      let notif = null;
       try {
         const response = await APIObj.get('/api/auth/verify');
+        notif=addNotification(LoginProgressNotification)
         if (response.status === 200) {
           setUser(response.data);
           setStatus(true);
           localStorage.setItem('user', JSON.stringify(response.data));
           localStorage.setItem('userStatus', 'true');
           localStorage.setItem('lastUserRefresh', currentTime.toString());
+          updateNotification(notif, LoginSuccessNotification)
         }
       } catch (error) {
+        handleError(error)
         logout();
       }
     } else {
@@ -51,6 +59,7 @@ const UserProvider = ({ children }) => {
     localStorage.setItem('userStatus', 'true');
     localStorage.setItem('lastUserRefresh', Date.now().toString());
   }, []);
+ 
 
   const logout = useCallback(async () => {
     if(status){
@@ -64,9 +73,12 @@ const UserProvider = ({ children }) => {
           localStorage.removeItem('user');
           localStorage.removeItem('userStatus');
           localStorage.removeItem('lastUserRefresh');
+          addNotification(LogoutNotification)
         }
       } catch (error) {
-        // Handle error
+        handleError(error)
+      } finally {
+
       }
     }
   }, [APIObj, debug, status]);

@@ -6,6 +6,8 @@ import React, { Suspense } from "react";
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** 6 Degrees Pages ****/
+const WelcomePage = lazy(() => import("../components/welcome/WelcomePage.js"));
+
 const Login = lazy(() => import("../components/auth/Login.js"));
 const PostPage = lazy(() => import("../components/posts/PostPage.js")); // Added Admin Page
 const ProfilePage = lazy(() => import("../components/profile/ProfilePage.js"));
@@ -30,7 +32,9 @@ const ThemeRoutes = [
     path: "/",
     element: <Suspense fallback={<div>Loading...</div>}><FullLayout /></Suspense>,
     children: [
-      { path: "/", element: <Navigate to="/" /> },
+      { path: "/", element: <Navigate to="/welcome" /> },
+      { path: "/welcome", element:<WelcomePage></WelcomePage>},
+
       { path: "/posts/:query", element:<PostPage></PostPage>},
       { path: "/posts/create", element:<CreatePostPage></CreatePostPage>},
 

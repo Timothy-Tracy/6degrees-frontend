@@ -1,6 +1,6 @@
 // NotificationContainer.js
 import React from 'react';
-import Notification from './Notification';
+import GlobalNotification from './GlobalNotification';
 import { useNotification } from './../context/NotificationContext';
 
 const NotificationContainer = () => {
@@ -16,7 +16,7 @@ const NotificationContainer = () => {
   return (
     <div style={containerStyle}>
       {notifications.map((notification) => (
-        <Notification
+        <GlobalNotification
           key={notification.id}
           {...notification}
           onDismiss={removeNotification}

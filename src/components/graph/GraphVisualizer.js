@@ -51,7 +51,7 @@ const GraphVisualizer = ({ data }) => {
     };
 
     return (
-        <>
+        
             <Row>
                 <Col>
                     <ForceGraph2D
@@ -73,7 +73,7 @@ const GraphVisualizer = ({ data }) => {
                         linkDirectionalParticleColor={() => 'blue'}
 
                         linkCurvature={0}
-                        width={window.width}
+                        
                         height={250}
                     />
                 </Col>
@@ -111,7 +111,7 @@ const GraphVisualizer = ({ data }) => {
             </Row>
 
 
-        </>
+        
 
 
     );

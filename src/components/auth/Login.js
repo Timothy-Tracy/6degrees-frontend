@@ -9,6 +9,8 @@ import APIModeAlert from '../APIModeAlert';
 import useError from '../../hooks/useError';
 import { useGlobalError } from '../context/ErrorContext';
 import withAsyncErrorHandler from '../../errors/withAsyncErrorHandler';
+import Notification from '../notifications/Notification';
+import { LoginProgressNotification } from '../notifications/auth/AuthNotifications';
 const Login = () => {
     const { error, handleError, clearError, ErrorMessageComponent } = useError();
     const { globalError, setError: setGlobalError, clearError: clearGlobalError } = useGlobalError();
@@ -66,8 +68,8 @@ const Login = () => {
             }
         } catch (error) {
             handleError(error)
-            setMessage('Authentication failed: ' + (error.response?.data.message || error.message));
-            setMessageType('danger');
+            setMessage(<Notification {...LoginProgressNotification}></Notification>);
+            
             console.error("Authentication error:", error.response || error.message);
         }
     };
@@ -83,7 +85,7 @@ const Login = () => {
                         <CardBody>
                             <ErrorMessageComponent></ErrorMessageComponent>
                             <APIModeAlert></APIModeAlert>
-                            {message && <Alert color={messageType}>{message}</Alert>}
+                            {message}
                             <Form onSubmit={handleSubmit}>
                                 <FormGroup>
                                     <Label for="email">E-mail</Label>

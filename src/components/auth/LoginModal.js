@@ -4,6 +4,9 @@ import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Label, Input, A
 import { useUser } from '../context/UserContext';
 import { useAPI } from '../context/APIContext';
 import { useLoginModal } from './LoginModalContext';
+import {LogoutNotification, LoginProgressNotification, LoginSuccessNotification, LoginErrorNotification} from '../notifications/auth/AuthNotifications'
+import { useNotification } from '../context/NotificationContext';
+import Notification from '../notifications/Notification';
 
 
 const LoginModal = () => {
@@ -20,7 +23,7 @@ const LoginModal = () => {
     const [createAccountMode, setCreateAccountMode] = useState(false);
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
-
+    const {addNotification, updateNotification} = useNotification();
 
     const reset = () => {
         setEmail('');
@@ -53,6 +56,7 @@ const LoginModal = () => {
     }  
 
     const tryLogin = async (e) => {
+        let notif;
         const url = `${API}/api/auth/${createAccountMode ? 'register' : 'login'}`;
         const payload = createAccountMode ? {
             firstName,
@@ -62,12 +66,13 @@ const LoginModal = () => {
             username,
             mobile
         } : { email, password };
+        
 
         try {
             const response = await APIObj.post(url, payload);
             if (response.data.jwt) {
                 login({ email, role: createAccountMode ? role : undefined }, response.data.jwt, true);
-                setMessage('Successful! Redirecting...');
+                setMessage(<Notification {...LoginSuccessNotification}></Notification>);
                 setMessageType('success');
                 setTimeout(() => {
                     handleClose()
@@ -77,8 +82,8 @@ const LoginModal = () => {
                 throw new Error('No token received, authentication failed.');
             }
         } catch (error) {
-            setMessage('Authentication failed: ' + (error.response?.data.message || error.message));
-            setMessageType('danger');
+            setMessage(<Notification {...LoginErrorNotification}>{error.message}</Notification>);
+
             console.error("Authentication error:", error.response || error.message);
         }
     };
@@ -87,7 +92,7 @@ const LoginModal = () => {
         <Modal isOpen={isModalOpen} toggle={handleClose}>
             <ModalHeader toggle={closeModal}>{createAccountMode ? "Create Account" : "Login"}</ModalHeader>
             <ModalBody>
-                {message && <Alert color={messageType}>{message}</Alert>}
+                {message}
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label for="email">E-mail</Label>

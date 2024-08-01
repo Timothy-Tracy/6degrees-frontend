@@ -187,7 +187,10 @@ const PostPage = () => {
                 </Card>
             )}
             <h4>Distribution Path</h4>
-               <GraphVisualizer  data={nodePath}></GraphVisualizer>
+            <Row>
+            <GraphVisualizer  data={nodePath}></GraphVisualizer>
+            </Row>
+               
               
             
             <h4>Comments</h4>

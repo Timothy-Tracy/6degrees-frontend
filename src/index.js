@@ -31,6 +31,7 @@ const root = createRoot(rootElement);
 root.render(
   <QueryClientProvider client={queryClient}>
   <Suspense fallback={<Loader />}>
+  <NotificationProvider>
   <ErrorProvider>
   <ErrorBoundary>
     
@@ -39,7 +40,7 @@ root.render(
         <DebugProvider>
           <APIProvider>
             <UserProvider>
-              <NotificationProvider>
+              
               {refreshUserContext}
               <LoginModalProvider>
       {/* Your other app components */}
@@ -50,7 +51,7 @@ root.render(
       
     </LoginModalProvider>
               
-    </NotificationProvider>
+    
             </UserProvider>
           </APIProvider>
 
@@ -60,6 +61,7 @@ root.render(
     </BrowserRouter>
     </ErrorBoundary>
     </ErrorProvider>
+    </NotificationProvider>
   </Suspense>
   </QueryClientProvider>
   ,
