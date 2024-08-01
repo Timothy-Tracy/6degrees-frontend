@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, ButtonDropdown, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, InputGroup, Row } from "reactstrap"
 import useUserSearchWithAutocomplete from "../api/search/useUserSearchWithAutoComplete"
+import { useNavigate } from "react-router-dom"
 
 const HeaderSearchBar = () => {
     const [toggle,setToggle] = useState(false)
@@ -8,6 +9,7 @@ const HeaderSearchBar = () => {
     const [value, setValue] = useState('')
     const {setPrefix, results} = useUserSearchWithAutocomplete()
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const navigate = useNavigate();
   const searchInputRef = useRef(null);
     const handleToggle = () => {
         setToggle(!toggle)
@@ -21,6 +23,7 @@ const HeaderSearchBar = () => {
         console.log('Selected result:', result);
         setDropdownOpen(false);
         setValue('')
+        navigate(`/users/${result}`)
         // You can add additional logic here, like navigating to a details page
       };
     useEffect(()=>{
@@ -28,6 +31,8 @@ const HeaderSearchBar = () => {
         if(value.length >0){
             setDropdownOpen(true);
 
+        } else {
+            setDropdownOpen(false)
         }
         setPrefix(value)
     }, [value])
@@ -35,7 +40,7 @@ return (
     <Container className='text-center justify-content-center'>
         <Row>
         <InputGroup>
-        <Input innerRef={searchInputRef} value={value} type="text" placeholder={`Search 6 Degrees ${searchType}`} onChange={(e) => handleOnChange(e)}></Input>
+        <Input innerRef={searchInputRef} value={value} type="text" placeholder={`Search`} onChange={(e) => handleOnChange(e)}></Input>
       
         
         <ButtonDropdown isOpen={toggle}toggle={handleToggle}>

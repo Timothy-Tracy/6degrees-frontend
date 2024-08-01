@@ -6,6 +6,8 @@ import React, { Suspense } from "react";
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** 6 Degrees Pages ****/
+const UserPage = lazy(() => import("../components/users/UserPage.js"));
+
 const WelcomePage = lazy(() => import("../components/welcome/WelcomePage.js"));
 
 const Login = lazy(() => import("../components/auth/Login.js"));
@@ -34,6 +36,7 @@ const ThemeRoutes = [
     children: [
       { path: "/", element: <Navigate to="/welcome" /> },
       { path: "/welcome", element:<WelcomePage></WelcomePage>},
+      { path: "/users/:query", element:<UserPage></UserPage>},
 
       { path: "/posts/:query", element:<PostPage></PostPage>},
       { path: "/posts/create", element:<CreatePostPage></CreatePostPage>},

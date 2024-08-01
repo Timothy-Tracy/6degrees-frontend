@@ -1,6 +1,7 @@
 import { ModalTitle } from "react-bootstrap";
 import { Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useDebug } from "../../context/DebugContext";
+import CopyToClipboardButton from "../../buttons/CopyToClipboardButton";
 
 const ShareModal = ({show, handleClose, node}) =>{
     const {debug} = useDebug();
@@ -17,6 +18,7 @@ const ShareModal = ({show, handleClose, node}) =>{
                         </Row>
                         <Row>
                         <span>https://localhost:3000/posts/{node?.EDGE_QUERY}</span>
+                        <CopyToClipboardButton text={`https://localhost:3000/posts/${node?.EDGE_QUERY}`}></CopyToClipboardButton>
                         </Row>
                     </Row>
                     <Row className='py-3'>

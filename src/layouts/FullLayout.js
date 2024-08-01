@@ -20,9 +20,9 @@ const FullLayout = () => {
         <div className="contentArea">
           {/********header**********/}
           <Header />
-          <GlobalErrorComponent></GlobalErrorComponent>
-          {/********Middle Content**********/}
-          <Container className="p-4 wrapper" fluid>
+            <GlobalErrorComponent></GlobalErrorComponent>
+              {/********Middle Content**********/}
+              <Container className="p-4 wrapper" fluid>
             <Outlet />
           </Container>
         </div>
