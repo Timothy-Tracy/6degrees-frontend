@@ -26,7 +26,7 @@ const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setPa
 
         APIObj.get(`/api/comments/${COMMENT_UUID}`)
             .then(response => {
-                setComment(response.data.data);
+                setComment(response.data);
                 setIsLoaded(true);
             })
             .catch(console.error);

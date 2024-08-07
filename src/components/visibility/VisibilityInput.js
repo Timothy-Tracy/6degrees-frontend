@@ -31,7 +31,7 @@ const VisibilityInput = ({
     options = [],
     outputArr = [],
     setOutputArr,
-    specialOption = { checkboxLabel: 'Public', value: 'public', behavior: 'exclusive' }
+    specialOption = { checkboxLabel: 'Anyone', value: 'Public', behavior: 'exclusive' }
 }) => {
     const { debug } = useDebug();
 
@@ -146,7 +146,7 @@ const VisibilityInput = ({
     }, [getCheckboxState]);
 
     return (
-        <>
+        <FormGroup id='visibility'>
             <Col sm={{ size: 10 }}>
                 {checkboxes.map(({ checkboxLabel, checkboxArrayValue, value, disabled }) => (
                     <FormGroup key={value}>
@@ -163,12 +163,7 @@ const VisibilityInput = ({
                     </FormGroup>
                 ))}
             </Col>
-            <FormGroup check row>
-                <Col sm={{ offset: 2, size: 10 }}>
-                    <Button>Submit</Button>
-                </Col>
-            </FormGroup>
-        </>
+        </FormGroup>
     );
 };
 

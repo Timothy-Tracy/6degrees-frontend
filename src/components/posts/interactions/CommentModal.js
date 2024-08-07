@@ -30,13 +30,22 @@ const CommentModal = ({ show, handleClose, parentComment, setParentComment, node
 
     const visibilityOptions =[
         {
+            checkboxLabel: 'Original Poster',
+            value: 'Original Poster'
+        },
+        {
+            checkboxLabel: 'Distribution Path',
+            value: 'Distribution Path'
+        },
+        {
             checkboxLabel: 'Friends',
-            value: 'friends'
+            value: 'Friends'
         },
         {
             checkboxLabel: 'Followers',
-            value: 'followers'
-        }
+            value: 'Followers'
+        },
+
     ]
 
     const specialOptions = [
@@ -95,6 +104,7 @@ const CommentModal = ({ show, handleClose, parentComment, setParentComment, node
                         <Row>
                         
                         <Col>
+                        <strong>Who can see this comment?</strong>
                         <VisibilityInput options={visibilityOptions} outputArr={visibilityOutputArray} setOutputArr={setVisibilityOutputArray}></VisibilityInput>
                         </Col>
                         </Row>
@@ -103,7 +113,7 @@ const CommentModal = ({ show, handleClose, parentComment, setParentComment, node
                         
 
                         <FormGroup className="mb-3" controlId="commentText">
-                            <FormLabel>Your Comment</FormLabel>
+                            <FormLabel><strong>Your Comment</strong></FormLabel>
                             <FormControl
                                 as="textarea"
                                 rows={3}
