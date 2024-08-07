@@ -40,13 +40,14 @@ const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setPa
     }, [fetchComment, show]);
 
     if (!comment) return null;
+    if(comment.error) return null;
 
     return (
         <Row style={{ display: show ? 'block' : 'none' }} className="p-3">
             <Card color='light' outline className='p-3'>
                 <Row>
                     <Col>
-                        <p>@{comment.username} - <TimeAgo dateString={comment.createdAt} /> </p>
+                        <p>@{comment.username} - <TimeAgo dateString={comment.createdAt} />  <span>- {comment.visibility}</span></p>
                     </Col>
                 </Row>
                 <Row><p>{comment.body}</p></Row>

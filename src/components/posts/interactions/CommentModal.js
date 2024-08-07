@@ -61,7 +61,8 @@ const CommentModal = ({ show, handleClose, parentComment, setParentComment, node
                 {
                     NODE_UUID: node.NODE_UUID,
                     body: commentText,
-                    PARENT_COMMENT_UUID: parentComment || ""
+                    PARENT_COMMENT_UUID: parentComment || "",
+                    visibility: visibilityOutputArray
                 }
             );
             setCommentText('');
