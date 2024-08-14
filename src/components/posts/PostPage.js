@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, memo, useRef } from "react";
 import { useAPI } from "../context/APIContext"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGlobalError } from '../context/ErrorContext';
-import { Card, Button, Badge } from 'reactstrap'
+import { Card, Button, Badge, Container } from 'reactstrap'
 import { Col, Row } from "reactstrap";
 import GlobalErrorComponent from "../../errors/GlobalErrorComponent";
 import TimeAgo from "../../tools/TimeAgo";
@@ -13,71 +13,8 @@ import useNode from "../../hooks/useNode.js";
 import useFetchNodeContextByQuery from "../../api/nodes/useFetchNodeContextByQuery.js";
 import { useUser } from "../context/UserContext.js";
 import GraphVisualizer from "../graph/GraphVisualizer.js";
+import CommentProvider from "../comments/CommentProvider.js";
 
-const CommentObj = memo(function CommentObj({ COMMENT_UUID, parentComment, setParentComment, handleReply, show }) {
-    const [comment, setComment] = useState(null);
-    const [showChildComments, setShowChildComments] = useState(false);
-    const { APIObj } = useAPI();
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    const fetchComment = useCallback(() => {
-
-        if (isLoaded) return;
-
-        APIObj.get(`/api/comments/${COMMENT_UUID}`)
-            .then(response => {
-                setComment(response.data);
-                setIsLoaded(true);
-            })
-            .catch(console.error);
-    }, [COMMENT_UUID, APIObj, isLoaded]);
-
-    useEffect(() => {
-        if (show) {
-            fetchComment();
-        }
-
-    }, [fetchComment, show]);
-
-    if (!comment) return null;
-    if(comment.error) return null;
-
-    return (
-        <Row style={{ display: show ? 'block' : 'none' }} className="p-3">
-            <Card color='light' outline className='p-3'>
-                <Row>
-                    <Col>
-                        <p>@{comment.username} - <TimeAgo dateString={comment.createdAt} />  <span>- {comment.visibility}</span></p>
-                    </Col>
-                </Row>
-                <Row><p>{comment.body}</p></Row>
-                <Row>
-                    <Col className='mx-1 text-center' xs='2' sm='1'>
-                        <Button className="btn" color='secondary' onClick={() => { setParentComment(comment.COMMENT_UUID); handleReply(); }}>
-                            Reply
-                        </Button>
-                    </Col>
-                    {comment.childComments?.length > 0 && (
-                        <Col className='mx-1'>
-                            <Button className="btn" color='secondary' onClick={() => setShowChildComments(!showChildComments)}>
-                                {showChildComments ? "Hide" : "Load"} Replies <Badge color="secondary">{comment.repliesCount?.low ?? " "}</Badge>
-                            </Button>
-                        </Col>
-                    )}
-                </Row>
-                {comment.childComments?.map(childCommentUUID => (
-                    <CommentObj
-                        show={showChildComments}
-                        key={childCommentUUID}
-                        COMMENT_UUID={childCommentUUID}
-                        handleReply={handleReply}
-                        setParentComment={(pc) => setParentComment(pc)}
-                    />
-                ))}
-            </Card>
-        </Row>
-    );
-});
 
 const PostPage = () => {
     const { setError: setGlobalError } = useGlobalError();
@@ -95,6 +32,22 @@ const PostPage = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const navigate = useNavigate();
     const {user} = useUser();
+    const cardRef = useRef(null);
+    const [cardHeight, setCardHeight] = useState(200);
+    const [cardWidth, setCardWidth] = useState(500);
+
+
+    useEffect(() => {
+
+        if (cardRef.current) {
+            setCardHeight(cardRef.current.offsetHeight);
+            setCardWidth(cardRef.current.offsetWidth);
+            console.log(cardRef.current.offsetHeight)
+
+        }
+
+
+    }, [cardRef]);
     const fetchPostData = useCallback(async () => {
         if (isLoaded) {
             return;
@@ -117,7 +70,7 @@ const PostPage = () => {
             return;
         }
         try {
-            const response = await APIObj.get(`/api/nodes/path/${query}`);
+            const response = await APIObj.get(`/api/nodes/${query}/path/`);
             console.log('fetching path')
             console.log(response)
             if (response.status === 200) {
@@ -151,7 +104,8 @@ const PostPage = () => {
     return (
         <>
             {console.log(node)}
-            <GlobalErrorComponent />
+            <Container className=''>
+          
             <Card className="p-3">
                 <Row>
                     <h1>{postData.title || ''}</h1>
@@ -169,34 +123,17 @@ const PostPage = () => {
                     </Col>
                 </Row>
             </Card>
-            {prevNode && (
-                <Card>
-
-                    <h5>Distribution Path</h5>
-                    <Row className='text-center'>
-                        <p>
-                            {
-
-                                nodePath?.map((node) => {
-                                    console.log('hi')
-                                    return (<span>@{node.username} -- </span>)
-                                })
-                            }
-                            <span>You</span>
-                        </p>
-                    </Row>
-                </Card>
-            )}
+           
             <h4>Distribution Path</h4>
-            <Row>
-            <GraphVisualizer  data={nodePath}></GraphVisualizer>
+            <Row className='justify-content-center align-items-center border border-post rounded-3'>
+            <GraphVisualizer data={nodePath} ></GraphVisualizer>
             </Row>
                
               
             
             <h4>Comments</h4>
             {commentData?.map((element) => (
-                <CommentObj
+                <CommentProvider
                     show={true}
                     key={element}
                     COMMENT_UUID={element}
@@ -212,6 +149,8 @@ const PostPage = () => {
                 node={node}
 
             />
+
+</Container>
         </>
     );
 };

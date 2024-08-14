@@ -2,25 +2,34 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { Button, Col, Container, Row } from "reactstrap"
 import useFetchUser from "../../api/users/useFetchUser";
+import useFetchManyPosts from "../../api/posts/useFetchManyPosts";
+import PostCard from "../posts/PostCard";
 
 const UserPage = ({ username }) => {
 
     const { query } = useParams();
     const { setUsername, userData } = useFetchUser()
     const [user, setUser] = useState(null);
-
+   // const {posts,setURLQuery, fetchPosts} = useFetchManyPosts({target: {username:query}});
     useEffect(() => {
         setUsername(query)
     }, [])
     useEffect(() => {
         console.log(userData)
-        setUser(userData?.properties)
+        setUser(userData)
 
     }, [userData])
     useEffect(() => {
         console.log(JSON.stringify(user, null, 2))
+        
+        //fetchPosts()
 
     }, [user])
+
+    // useEffect(()=>{
+    //     console.log(posts, 'POSTS')
+    // }, [posts])
+ 
     return (
         <Container>
             <Row className='py-2'>
@@ -52,7 +61,11 @@ const UserPage = ({ username }) => {
 
             </Row>
 
+           
+
+            <PostCard></PostCard>
             <pre>{JSON.stringify(userData, null, 2)}</pre>
+            {/*<pre>{JSON.stringify(posts, null, 2)}</pre>*/}
         </Container>
     )
 }
