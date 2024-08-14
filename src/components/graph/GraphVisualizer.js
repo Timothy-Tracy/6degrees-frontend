@@ -4,11 +4,21 @@ import { CloseButton, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row } from
 import TimeAgo from '../../tools/TimeAgo';
 
 
-const GraphVisualizer = ({ data }) => {
+const GraphVisualizer = ({ data, width, height }) => {
 
     const [toggle, setToggle] = useState(false)
     const [selectedNode, setSelectedNode] = useState(null)
+    const [dimensions, setDimensions] = useState({ width: width ||800, height: height|| 250 });
+    const containerRef = useRef(null);
     const handleToggle = () => setToggle(!toggle);
+    useEffect(() => {
+        if (containerRef.current) {
+            setDimensions({
+                width: containerRef.current.offsetWidth,
+                height: height
+            });
+        }
+    }, [height]);
 
 
     const handleNodeClick = (node) => {
@@ -52,63 +62,43 @@ const GraphVisualizer = ({ data }) => {
 
     return (
         
-            <Row>
-                <Col>
-                    <ForceGraph2D
-
-                        graphData={data}
-                        nodeLabel='username'
-                        nodeAutoColorBy="degree"
-                        nodeCanvasObject={nodeUsernameCanvasObject}
-                        nodeCanvasObjectMode={() => 'replace'}
-                        nodeRelSize={10}
-                    
-                        onNodeClick={handleNodeClick}
-                        linkWidth={1}
-                        linkColor={() => 'white'}
-                        linkLabel="EDGE_QUERY"
-                        linkDirectionalArrowLength={2}
-                        linkDirectionalArrowRelPos={1}
-                        linkDirectionalArrowColor={() => 'white'}
-                        linkDirectionalParticleColor={() => 'blue'}
-
-                        linkCurvature={0}
-                        
-                        height={250}
-                    />
-                </Col>
-                <Col>
-                    <Offcanvas
-                        backdrop={true}
-                        direction="end"
-                        isOpen={toggle}
-                    >
-                        <CloseButton onClick={()=>{setSelectedNode(null); handleToggle()}} className='justify-content-end' variant='white'></CloseButton>
-
-                        <OffcanvasHeader toggle={handleToggle}>
-                            User @{selectedNode?.username || 'Anonymous User'} interacted with this post <TimeAgo dateString={selectedNode?.createdAt}></TimeAgo>
-                        </OffcanvasHeader>
-                        
-                        <OffcanvasBody>
-                            <p>Degree of separation: {selectedNode?.degree}</p>
-
-                            <strong>
-                                Thanks to @{selectedNode?.username || 'Anonymous User'},
-                            </strong>
-                        <p>{selectedNode?.views?.low} people have seen this post</p>
-
-                            <p>{selectedNode?.shares?.low} people have interacted with this post</p>
-                            <strong>
-                                <pre>
-                                    
-                               
-                                </pre>
-                                
-                            </strong>
-                        </OffcanvasBody>
-                    </Offcanvas>
-                </Col>
-            </Row>
+        <div className='container-fluid' ref={containerRef} style={{ width: '100%', height: '100%' }}>
+        <ForceGraph2D
+            graphData={data}
+            nodeLabel='username'
+            nodeAutoColorBy="degree"
+            nodeCanvasObject={nodeUsernameCanvasObject}
+            nodeCanvasObjectMode={() => 'replace'}
+            nodeRelSize={10}
+            onNodeClick={handleNodeClick}
+            linkWidth={1}
+            linkColor={() => 'white'}
+            linkLabel="EDGE_QUERY"
+            linkDirectionalArrowLength={2}
+            linkDirectionalArrowRelPos={1}
+            linkDirectionalArrowColor={() => 'white'}
+            linkDirectionalParticleColor={() => 'blue'}
+            linkCurvature={0}
+            width={dimensions.width || null}
+            height={dimensions.height}
+        />
+        <Offcanvas
+            backdrop={true}
+            direction="end"
+            isOpen={toggle}
+        >
+            <CloseButton onClick={() => { setSelectedNode(null); handleToggle(); }} className='justify-content-end' variant='white' />
+            <OffcanvasHeader toggle={handleToggle}>
+                User @{selectedNode?.username || 'Anonymous User'} interacted with this post <TimeAgo dateString={selectedNode?.createdAt} />
+            </OffcanvasHeader>
+            <OffcanvasBody>
+                <p>Degree of separation: {selectedNode?.degree}</p>
+                <strong>Thanks to @{selectedNode?.username || 'Anonymous User'},</strong>
+                <p>{selectedNode?.views?.low} people have seen this post</p>
+                <p>{selectedNode?.shares?.low} people have interacted with this post</p>
+            </OffcanvasBody>
+        </Offcanvas>
+    </div>
 
 
         

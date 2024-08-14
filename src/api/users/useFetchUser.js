@@ -20,7 +20,7 @@ function useFetchUser(){
         const response = APIObj.get(`/api/users/${username}`)
         .then(({data}) =>{
             console.log(data)
-            setUserData(data.data[0].result);
+            setUserData(data);
         })
         .catch((error)=>{
             setError(error.message);

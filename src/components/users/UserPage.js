@@ -10,6 +10,7 @@ const UserPage = ({ username }) => {
     const { query } = useParams();
     const { setUsername, userData } = useFetchUser()
     const [user, setUser] = useState(null);
+    
    // const {posts,setURLQuery, fetchPosts} = useFetchManyPosts({target: {username:query}});
     useEffect(() => {
         setUsername(query)
