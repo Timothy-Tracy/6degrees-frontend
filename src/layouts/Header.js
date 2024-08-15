@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 import {
   Navbar,
   Collapse,
@@ -15,6 +16,7 @@ import {
   Input,
   ButtonDropdown,
   InputGroup,
+  Row,
 } from "reactstrap";
 import user1 from "../assets/images/users/user1.jpg";
 import { useUser } from '../components/context/UserContext';
@@ -62,8 +64,8 @@ const Header = () => {
     if (status) {
       setAccountMenu(
         <div>
-          <DropdownToggle color="primary">
-            Menu
+          <DropdownToggle className='rounded-5' color="primary">
+          <FaUser size={24}/>
           </DropdownToggle>
           <DropdownMenu>
             <DropdownItem header>Info</DropdownItem>
@@ -133,13 +135,20 @@ const Header = () => {
         
       </Col>
       <Col>
+        <Row>
+
+       
+              
+            
         <Container className='px-3 text-end'>
+        
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             {AccountMenu}
           </Dropdown>
 
           {LoginButton}
         </Container>
+        </Row>
       </Col>
 
 

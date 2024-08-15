@@ -8,6 +8,7 @@ import UsernameAt from "../users/UsernameAt";
 import GraphVisualizer from "../graph/GraphVisualizer";
 import { useEffect, useRef, useState } from "react";
 import Comment from "../comments/Comment";
+import ShareButton2 from "./interactions/ShareButton2";
 // THIS COMPONENET RECEIVES A NODE UUID OR QUERY AND THATS IT
 //LEMME START BUILDING IT BASED SOLEY OFF A NODE UUID
 //THAT IS ITS ONLY DSEPENDENCY
@@ -90,34 +91,34 @@ let gdata = {
 };
 
 let cData = {
-    
-COMMENT_UUID: '0190dd10-be3a-7445-818c-66decd1b08e4',
-body: 'Yo grandaddy is a great post',
-createdAt: '2024-07-23T00:49:40.413Z',
-updatedAt: '2024-07-23T00:49:40.413Z',
-visibility: 'public',
-username: 'timsmith'
+
+    COMMENT_UUID: '0190dd10-be3a-7445-818c-66decd1b08e4',
+    body: 'Yo grandaddy is a great post',
+    createdAt: '2024-07-23T00:49:40.413Z',
+    updatedAt: '2024-07-23T00:49:40.413Z',
+    visibility: 'public',
+    username: 'timsmith'
 }
 
 let bData = {
-    
+
     COMMENT_UUID: '0190dd10-be3a-7445-818c-66decd1b08e4',
     body: 'my daddy is a great post',
     createdAt: '2024-07-23T00:49:40.413Z',
     updatedAt: '2024-07-23T00:49:40.413Z',
     visibility: 'public',
     username: 'timsmith'
-    }
+}
 
-    let aData = {
-    
-        COMMENT_UUID: '0190dd10-be3a-7445-818c-66decd1b08e4',
-        body: 'my great grandaddy is a great post',
-        createdAt: '2024-07-23T00:49:40.413Z',
-        updatedAt: '2024-07-23T00:49:40.413Z',
-        visibility: 'public',
-        username: 'timsmith'
-        }
+let aData = {
+
+    COMMENT_UUID: '0190dd10-be3a-7445-818c-66decd1b08e4',
+    body: 'my great grandaddy is a great post',
+    createdAt: '2024-07-23T00:49:40.413Z',
+    updatedAt: '2024-07-23T00:49:40.413Z',
+    visibility: 'public',
+    username: 'timsmith'
+}
 
 
 const PostCard = () => {
@@ -140,8 +141,8 @@ const PostCard = () => {
 
     }, []);
 
-    useEffect(()=>{
-        if(hoveredCard){
+    useEffect(() => {
+        if (hoveredCard) {
             setCardClass('bg-post rounded-5 p-3 shadow border-3 border-post')
         } else {
             setCardClass('rounded-5 p-3 shadow border-3 border-post')
@@ -153,8 +154,8 @@ const PostCard = () => {
             <Container className='py-2'>
                 <Row>
                     <Card className={cardClass}
-                    onMouseEnter={() => setHoveredCard(true)}
-                    onMouseLeave={() => setHoveredCard(false)}>
+                        onMouseEnter={() => setHoveredCard(true)}
+                        onMouseLeave={() => setHoveredCard(false)}>
                         <Row>
                             <CardTitle><h3>AITA for taking my daughter away and telling my ex I expect him to support me financially while I look after her because his partner wouldnt make her tea</h3></CardTitle>
                             <CardSubtitle>
@@ -180,21 +181,29 @@ const PostCard = () => {
                                     <Badge className='bg-transparent'>6</Badge>
 
                                 </div>
-                                <Button className='bg-primary rounded-pill p-2 px-2 gap-2'>
-                                    <div className="px-2 py-1 gap-2">
-                                    <FiShare className='color-primary' size={24}></FiShare>
-                                    <strong className='px-1'>Share</strong>
-                                    <Badge className='px-1'>6</Badge>
+                                <ShareButton2>
+                                <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary'>
+                                    <div className="d-inline-flex px-2 py-1 gap-2">
+                                        <FiShare className='color-primary' size={24}></FiShare>
+                                        <strong className='px-1'>Share</strong>
+                                        <Badge className='px-1'>6</Badge>
                                     </div>
                                 </Button>
-                               
+                                </ShareButton2>
 
-                                <div className='bg-primary d-inline-flex align-items-center rounded-pill px-3 py-2 '>
-                                    <FaRegCommentDots className='color-primary' size={24}></FaRegCommentDots>
-                                    <div className='px-2 py-1 gap-2'><strong>Respond</strong></div>
-                                    <Badge>6</Badge>
+                                
+                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary'>
 
-                                </div>
+                                        <div className='d-inline-flex align-items-center '>
+                                            <FaRegCommentDots className='color-primary' size={24}></FaRegCommentDots>
+                                            <div className='px-2 py-1 gap-2'><strong>Respond</strong></div>
+                                            <Badge>6</Badge>
+
+                                        </div>
+                                    </Button>
+
+                             
+
 
                             </div>
 
@@ -210,7 +219,7 @@ const PostCard = () => {
 
                 </Row>
 
-               
+
             </Container>
         </>
     )
