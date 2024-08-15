@@ -2,10 +2,16 @@ import { ModalTitle } from "react-bootstrap";
 import { Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useDebug } from "../../context/DebugContext";
 import CopyToClipboardButton from "../../buttons/CopyToClipboardButton";
-
+import { useEffect } from "react";
+//Needs to be injected with a node that is your own.
+//If you do not have one that is your own, it makes one
 const ShareModal = ({show, handleClose, node}) =>{
     const {debug} = useDebug();
     debug(`ShareModal show = ${show}`)
+    useEffect(()=>{
+        debug(JSON.stringify(node), 'Share Modal Node Information')
+        console.log(node)
+    })
     return(
         <>
         

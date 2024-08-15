@@ -13,6 +13,31 @@ import ShareButton2 from "./interactions/ShareButton2";
 //LEMME START BUILDING IT BASED SOLEY OFF A NODE UUID
 //THAT IS ITS ONLY DSEPENDENCY
 // Then it displays a "Card"
+
+let pData = {POST_UUID
+: 
+"0190d1d8-0160-7ff5-b03b-6aed6e24f162",
+body
+: 
+"I (35f) have a daughter Kelly (16f) with my ex husband Josh(37m). We separated when Kelly was 10. Since then Josh got married again to Lily(30s f).Kelly mostly stays with me but also have her own room at Josh's house, which is significantly bigger then mine. It is important to note Kelly is not really a picky eater and usually cooks for herself as she enjoys cooking and trying new things. However she is very particular about how she wants her hot drinks done, like hot chocolate with milk only and no water or tea without any milk or sugar as she collects different types and feels adding milk or sugar ruins it.Now unfortunately Kelly had to go through an operation and currently can't move by herself and needs help. Josh suggested to have her stay at his house as he has more room and Lily can look after Kelly while he is at work since she is a housewife (they don't have any children together). Lily also agreed it will be for the best. Both me and Kelly went with the plan as I won't be able to be with her 24/7 due to my work and lack of cover and I won't be able to afford being off work for long as I have to pay for her operation alongside with other medical bills.It was a week on Friday since Kelly was staying with Josh and Lily and I would spend time with her in the evenings, when Kelly called me and asked me to take her home. I have asked what is wrong and she told me Lily kept messing with her drinks or serving her drinks she can't have (like coffee due to her meds) and when my daughter tried to raise it with her Lily said if Kelly doesn't like it she can make her own, knowing perfectly well my daughter is currently bed bound.I took her home and have told my ex I am expecting him to cover the medical bills and some of my expenses since Lily failed to do her job and her treatment of Kelly. I have refused to give her a second chance despite Josh asking me to and was called an asshole by him and my in laws.",
+comments
+: 
+{low: 16, high: 0},
+createdAt
+: 
+"2024-07-20T20:31:52.675Z",
+shares
+: 
+{low: 38, high: 0},
+title
+: 
+"AITA for taking my daughter away and telling my ex I expect him to support me financially while I look after her because his partner wouldnt make her tea",
+views
+: 
+{low: 1139, high: 0},
+visibility
+: 
+"public"}
 let gdata = {
     nodes: [
         {
@@ -121,13 +146,14 @@ let aData = {
 }
 
 
-const PostCard = () => {
+const PostCard = ({post, node, myNode}) => {
 
     const [gr, setGr] = useState(gdata)
     const cardRef = useRef(null);
     const [cardHeight, setCardHeight] = useState(200);
     const [hoveredCard, setHoveredCard] = useState(false);
     const [cardClass, setCardClass] = useState('rounded-5 p-3 shadow');
+    const [postData, setPostData] = useState(post||pData)
 
 
     useEffect(() => {
@@ -137,6 +163,7 @@ const PostCard = () => {
             console.log(cardRef.current.offsetHeight)
 
         }
+        console.log(postData)
 
 
     }, []);
@@ -157,7 +184,7 @@ const PostCard = () => {
                         onMouseEnter={() => setHoveredCard(true)}
                         onMouseLeave={() => setHoveredCard(false)}>
                         <Row>
-                            <CardTitle><h3>AITA for taking my daughter away and telling my ex I expect him to support me financially while I look after her because his partner wouldnt make her tea</h3></CardTitle>
+                            <CardTitle><h3>{postData?.title}</h3></CardTitle>
                             <CardSubtitle>
                                 <p>
 
@@ -169,9 +196,8 @@ const PostCard = () => {
                                 </p>
                             </CardSubtitle>
                             <p>
-                                I (35f) have a daughter Kelly (16f) with my ex husband Josh(37m). We separated when Kelly was 10. Since then Josh got married again to Lily(30s f).Kelly mostly stays with me but also have her own room at Josh's house, which is significantly bigger then mine. It is important to note Kelly is not really a picky eater and usually cooks for herself as she enjoys cooking and trying new things. However she is very particular about how she wants her hot drinks done, like hot chocolate with milk only and no water or tea without any milk or sugar as she collects different types and feels adding milk or sugar ruins it.Now unfortunately Kelly had to go through an operation and currently can't move by herself and needs help....
+                               {postData?.body}
                             </p>
-
                         </Row>
                         <Row>
                             <div className='d-flex gap-3'>
@@ -181,7 +207,7 @@ const PostCard = () => {
                                     <Badge className='bg-transparent'>6</Badge>
 
                                 </div>
-                                <ShareButton2>
+                                <ShareButton2 node={node}>
                                 <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary'>
                                     <div className="d-inline-flex px-2 py-1 gap-2">
                                         <FiShare className='color-primary' size={24}></FiShare>

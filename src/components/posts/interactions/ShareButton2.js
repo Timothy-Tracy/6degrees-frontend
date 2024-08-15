@@ -18,17 +18,13 @@ const ShareButton2 = ({query, node, setNode, prevNode, setPrevNode, children}) =
             handleShow();
             return ;
         } else {
-            interact();
+           
         }
             
 
     }
 
-    useEffect(()=>{
-        if(result){
-            fetch()
-        }
-    }, [result])
+    
     return (
         <>
             <div onClick={()=> { handleShare()}}>

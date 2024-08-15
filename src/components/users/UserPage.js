@@ -4,6 +4,7 @@ import { Button, Col, Container, Row } from "reactstrap"
 import useFetchUser from "../../api/users/useFetchUser";
 import useFetchManyPosts from "../../api/posts/useFetchManyPosts";
 import PostCard from "../posts/PostCard";
+import PostCardProvider from "../posts/PostCardProvider";
 
 const UserPage = ({ username }) => {
 
@@ -64,7 +65,7 @@ const UserPage = ({ username }) => {
 
            
 
-            <PostCard></PostCard>
+            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
             <pre>{JSON.stringify(userData, null, 2)}</pre>
             {/*<pre>{JSON.stringify(posts, null, 2)}</pre>*/}
         </Container>
