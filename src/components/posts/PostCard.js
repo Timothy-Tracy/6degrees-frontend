@@ -9,6 +9,8 @@ import GraphVisualizer from "../graph/GraphVisualizer";
 import { useEffect, useRef, useState } from "react";
 import Comment from "../comments/Comment";
 import ShareButton2 from "./interactions/ShareButton2";
+import useCommentModal from "../../api/comments/useCommentModal";
+import useError from "../../hooks/useError";
 // THIS COMPONENET RECEIVES A NODE UUID OR QUERY AND THATS IT
 //LEMME START BUILDING IT BASED SOLEY OFF A NODE UUID
 //THAT IS ITS ONLY DSEPENDENCY
@@ -146,14 +148,26 @@ let aData = {
 }
 
 
-const PostCard = ({post, node, myNode}) => {
+const PostCard = ({post, node, myNode, handleComment, children}) => {
 
     const [gr, setGr] = useState(gdata)
     const cardRef = useRef(null);
     const [cardHeight, setCardHeight] = useState(200);
     const [hoveredCard, setHoveredCard] = useState(false);
     const [cardClass, setCardClass] = useState('rounded-5 p-3 shadow');
-    const [postData, setPostData] = useState(post||pData)
+    const [postData, setPostData] = useState(post||pData);
+   
+    const{handleError} = useError()
+
+    const handleCommentClick = () => {
+        if(handleComment == null){
+           handleError('No handleComment function provided')
+    
+        } else {
+            handleComment({node:node})
+        }
+    }
+    
 
 
     useEffect(() => {
@@ -178,6 +192,7 @@ const PostCard = ({post, node, myNode}) => {
     }, [hoveredCard])
     return (
         <>
+            {children}
             <Container className='py-2'>
                 <Row>
                     <Card className={cardClass}
@@ -218,7 +233,7 @@ const PostCard = ({post, node, myNode}) => {
                                 </ShareButton2>
 
                                 
-                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary'>
+                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={()=>handleCommentClick()}>
 
                                         <div className='d-inline-flex align-items-center '>
                                             <FaRegCommentDots className='color-primary' size={24}></FaRegCommentDots>
