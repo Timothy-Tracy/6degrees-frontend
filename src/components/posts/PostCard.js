@@ -174,14 +174,17 @@ const PostCard = ({post, node, myNode, handleComment, children}) => {
 
         if (cardRef.current) {
             setCardHeight(cardRef.current.offsetHeight || 100);
-            console.log(cardRef.current.offsetHeight)
+          
 
         }
-        console.log(postData)
+        
 
 
     }, []);
 
+    useEffect(()=>{
+        console.log(postData)
+    }, [postData])
     useEffect(() => {
         if (hoveredCard) {
             setCardClass('bg-post rounded-5 p-3 shadow border-3 border-post')
@@ -256,7 +259,7 @@ const PostCard = ({post, node, myNode, handleComment, children}) => {
 
                         </Row>
                     </Card>
-                    <Comment disableChildren data={cData} parent={bData}><Comment disableChildren data={aData}></Comment></Comment>
+                    {/* <Comment disableChildren data={cData} parent={bData}><Comment disableChildren data={aData}></Comment></Comment> */}
 
                 </Row>
 

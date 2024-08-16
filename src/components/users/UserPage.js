@@ -66,7 +66,9 @@ const UserPage = ({ username }) => {
            
 
             <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
-            <pre>{JSON.stringify(userData, null, 2)}</pre>
+            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
+            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
+            {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
             {/*<pre>{JSON.stringify(posts, null, 2)}</pre>*/}
         </Container>
     )

@@ -7,11 +7,15 @@ import { useEffect } from "react";
 //If you do not have one that is your own, it makes one
 const ShareModal = ({show, handleClose, node}) =>{
     const {debug} = useDebug();
-    debug(`ShareModal show = ${show}`)
+    
     useEffect(()=>{
-        debug(JSON.stringify(node), 'Share Modal Node Information')
-        console.log(node)
-    })
+        if(show){
+            debug(JSON.stringify(node), 'Share Modal Node Information')
+
+        }
+       
+    }, [node])
+
     return(
         <>
         
