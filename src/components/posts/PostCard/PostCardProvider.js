@@ -37,7 +37,7 @@ const PostCardProvider = ({query}) => {
         <>
     
             <PostCard 
-            // handleGoToPost={handleGoToPost}
+            handleGoToPost={handleGoToPost}
                 isLoading={loading} 
                 handleInteraction={handleInteraction} 
                 handleShare={initShareModal} 

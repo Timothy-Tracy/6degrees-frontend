@@ -1,11 +1,15 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import React, { Suspense } from "react";
+import PostProvider from "../components/posts/PostProvider.js";
+import PostWrapper from "../components/posts/PostPage/PostWrapper.js";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** 6 Degrees Pages ****/
+const PostPageV2 = lazy(() => import("../components/posts/PostPage/PostPage.js")); 
+
 const UserPage = lazy(() => import("../components/pages/users/UserPage.js"));
 
 const WelcomePage = lazy(() => import("../components/welcome/WelcomePage.js"));
@@ -37,6 +41,11 @@ const ThemeRoutes = [
       { path: "/", element: <Navigate to="/welcome" /> },
       { path: "/welcome", element:<WelcomePage></WelcomePage>},
       { path: "/users/:query", element:<UserPage></UserPage>},
+      { path: "/posts/v2/:query", element:
+        (
+        <PostWrapper></PostWrapper>)
+      
+    },
 
       { path: "/posts/:query", element:<PostPage></PostPage>},
       { path: "/posts/create", element:<CreatePostPage></CreatePostPage>},

@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import { Button, Col, Container, Row } from "reactstrap"
 import useFetchUser from "../../../api/users/useFetchUser";
 import useFetchManyPosts from "../../../api/posts/useFetchManyPosts";
-import PostCard from "../../posts/PostCard/PostCard";
+
 import PostCardProvider from "../../posts/PostCard/PostCardProvider";
 import useFetchNodeQueriesByUsername from "../../../api/users/useFetchNodeQueriesByUsername";
+import PostProvider from "../../posts/PostProvider";
+import PostCard from "../../posts/PostCard/PostCard";
 
 const UserPage = ({ username }) => {
 
@@ -73,12 +75,12 @@ const UserPage = ({ username }) => {
             
             {
                 queries?.map((query, index)=>(
-                    <PostCardProvider
+                    <PostProvider
                     key={`${query.id}-${index}-${Date.now()}`}
                         query={query}
                     >
-
-                    </PostCardProvider>
+                        <PostCard></PostCard>
+                    </PostProvider>
                 ))
             }
             {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}

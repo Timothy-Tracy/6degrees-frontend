@@ -16,7 +16,7 @@ const useShare = (myNode, setMyNode) => {
     const { debug } = useDebug();
     const[ nodeLocal, setNodeLocal] = useState(null)
 
-   const {handleError} = useError();
+   const {handleError, assertHandlerPresence} = useError();
    const handleOpen = () => setShow(true);
    const handleClose = () => setShow(false);
 
@@ -28,6 +28,7 @@ const useShare = (myNode, setMyNode) => {
     * @param {Object} [setMyNode=()] - the global scope setter function for myNode state
     */
     const handleInteraction = (callbackFn) => {
+        console.log(typeof callbackFn)
         debug('Hnadling interaction', 'Hook: useShare, function: handleInteraction')
         if(!myNode){
         
@@ -36,7 +37,9 @@ const useShare = (myNode, setMyNode) => {
             //set the 'global state' of the node just created
             console.log('no myNode provided, interacting for the first time')
         }  else {
-          callbackFn()
+            console.log('calling callbackFn')
+            //assertHandlerPresence(callbackFn, 'callbackFn')()
+            callbackFn()
         }
     }
 

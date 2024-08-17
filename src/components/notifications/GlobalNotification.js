@@ -47,7 +47,7 @@ const GlobalNotification = ({ id, sender, title, message, type, duration, onDism
     
     <Toast style={toastStyle}>
         <Container className={`bg-${type}`}>
-      <ToastHeader icon={icon||null} toggle={() => onDismiss(id)}>{sender? `${sender}:`:''}{title}</ToastHeader>
+      <ToastHeader icon={icon||null} toggle={() => onDismiss(id)}>{sender? `${sender}: `:''}{title}</ToastHeader>
       </Container>
       <NotificationBody message={message} embed={embed}></NotificationBody>
       

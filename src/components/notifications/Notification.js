@@ -71,7 +71,7 @@ const Notification = ({ sender, title, message, type, duration, icon, embed, wid
     <Container className='py-2'>
       <Toast style={sty} isOpen={show}>
         <Container className={`bg-${type}`}>
-          <ToastHeader icon={icon || null} {...toggleBool}>{sender? `${sender}:`:''}{title}</ToastHeader>
+          <ToastHeader icon={icon || null} {...toggleBool}>{sender? `${sender}: `:''}{title}</ToastHeader>
           
         </Container>
         

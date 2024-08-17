@@ -14,6 +14,8 @@ import useError from "../../../hooks/useError";
 import LoadingWrapper from "../../loading/LoadingWrapper";
 import { useNavigate } from "react-router-dom";
 import { AppError } from "../../../errors/customErrors";
+import { useDebug } from "../../context/DebugContext";
+import { propTypes } from "react-bootstrap/esm/Image";
 // THIS COMPONENET RECEIVES A NODE UUID OR QUERY AND THATS IT
 //LEMME START BUILDING IT BASED SOLEY OFF A NODE UUID
 //THAT IS ITS ONLY DSEPENDENCY
@@ -159,34 +161,21 @@ let aData = {
 
 * @returns 
  */
-const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, handleInteraction, handleComment, handleShare, children }) => {
-
+const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, handleInteraction, handleComment, handleShare, children, ...props }) => {
     //const [gr, setGr] = useState(gdata)
     const cardRef = useRef(null);
     const [cardHeight, setCardHeight] = useState(200);
     const [hoveredCard, setHoveredCard] = useState(false);
     const [cardClass, setCardClass] = useState('rounded-5 p-3 shadow');
+    const {debug} = useDebug()
     
     
 
-    const { handleError } = useError()
-
-    const handleCommentClick = () => {
-        if (handleComment == null) {
-            handleError('No handleComment function provided')
-
-        } else {
-            handleComment()
-        }
-    }
-
-    const handleGoToPostClick = () =>{
-        if(!(handleGoToPost)){
-            throw new AppError({name:'PostCard Error', message:'No \'handleGoToPost\' function provided'})
-        } else {
-            handleGoToPost();
-        }
-    }
+    const { handleError, withErrorHandling, createSafeHandler } = useError()
+    const safeHandleInteraction = createSafeHandler('handleInteraction', handleInteraction);
+    const safeHandleComment = createSafeHandler('handleComment', handleComment);
+    const safeHandleGoToPost = createSafeHandler('handleGoToPost', handleGoToPost);
+    const safeHandleShare = createSafeHandler('handleShare', handleShare);
 
 
 
@@ -221,10 +210,10 @@ const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, ha
                     <Card className={cardClass}
                         onMouseEnter={() => setHoveredCard(true)}
                         onMouseLeave={() => setHoveredCard(false)}
-                        onClick={() => handleGoToPostClick()}
+                        
                         >
                         {/* <LoadingWrapper isLoading={isLoading}> */}
-                            <Row>
+                            <Row onClick={()=>safeHandleGoToPost()}>
 
                                 <CardTitle>
 
@@ -253,7 +242,7 @@ const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, ha
 
                                     </div>
 
-                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={() => { handleInteraction(handleShare) }}>
+                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={()=>safeHandleInteraction(safeHandleShare)}>
                                         <div className="d-inline-flex px-2 py-1 gap-2">
                                             <FiShare className='color-primary' size={24}></FiShare>
                                             <strong className='px-1'>Share</strong>
@@ -263,7 +252,7 @@ const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, ha
 
 
 
-                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={() => handleInteraction(handleCommentClick)}>
+                                    <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={()=>safeHandleInteraction(safeHandleComment)}>
 
                                         <div className='d-inline-flex align-items-center '>
                                             <FaRegCommentDots className='color-primary' size={24}></FaRegCommentDots>
