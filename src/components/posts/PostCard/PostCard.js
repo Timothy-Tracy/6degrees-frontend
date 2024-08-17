@@ -161,7 +161,7 @@ let aData = {
 
 * @returns 
  */
-const PostCard = ({ handleGoToPost, isLoading, post, node, myNode, setMyNode, handleInteraction, handleComment, handleShare, children, ...props }) => {
+const PostCard = ({ handleGoToPost, isLoading, post, nodeState, myNodeState, setMyNode, handleInteraction, handleComment, handleShare, children, ...props }) => {
     //const [gr, setGr] = useState(gdata)
     const cardRef = useRef(null);
     const [cardHeight, setCardHeight] = useState(200);

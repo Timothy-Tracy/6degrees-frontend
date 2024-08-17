@@ -12,12 +12,12 @@ import useShare from "../../hooks/share/useShare.js";
 
 const PostProvider = ({query, children}) => {
 
-    const {node, myNode, setMyNode, POST_UUID, isLoaded, error, fetch} = useNode(query)
+    const {nodeState, myNodeState, setMyNode, POST_UUIDState, isLoaded, error, fetch} = useNode(query)
     const [loading, setLoading] = useState(true);
     
     const {post, fetchPost}= usePost()
-    const{initCommentModal, CommentModalComponent} = useCommentModal(myNode)
-    const {initShareModal, ShareModalComponent, handleInteraction}= useShare(myNode, setMyNode)
+    const{initCommentModal, CommentModalComponent} = useCommentModal(myNodeState)
+    const {initShareModal, ShareModalComponent, handleInteraction}= useShare(myNodeState, setMyNode)
     const navigate = useNavigate();
     useEffect(()=>{
         if(post ==null){
@@ -43,8 +43,8 @@ const PostProvider = ({query, children}) => {
         handleShare: initShareModal,
         handleComment: initCommentModal,
         post:post,
-        node: node,
-        myNode:myNode
+        node: nodeState,
+        myNode:myNodeState
       };
     
     return (

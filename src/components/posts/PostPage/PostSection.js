@@ -50,33 +50,21 @@ const PostSection = ({ post, handleInteraction, handleComment, handleShare, chil
 
 
                             <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={() => handleInteraction(handleComment)}>
-
                                 <div className='d-inline-flex align-items-center '>
-                                    <FaRegCommentDots className='color-primary' size={24}></FaRegCommentDots>
-                                    <div className='px-2 py-1 gap-2'><strong>Respond</strong></div>
-                                    <Badge>{post?.comments?.low ?? ''}</Badge>
+                                    <FaRegCommentDots className='color-primary' size={24}/>
+                                    <div className='px-2 py-1 gap-2'>
+                                        <strong>
+                                            Respond
+                                        </strong></div>
+                                    <Badge>
+                                        {post?.comments?.low ?? ''}
+                                    </Badge>
 
                                 </div>
                             </Button>
-
-
-
-
                         </div>
-
-
-
-
-
-
-
-
-
                     </Row>
-
                 </CardBody>
-
-
             </Card>
 
         </>

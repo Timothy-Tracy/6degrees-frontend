@@ -5,9 +5,9 @@ import { useDebug } from "../../components/context/DebugContext";
 import CommentSubmitModal from "../../components/modals/comments/CommentSubmitModal";
 import useError from "../../hooks/useError";
 
-function useCommentModal(myNode) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setTheError] = useState(null);
+function useCommentModal(myNodeState) {
+    const {data, isLoading, error} = myNodeState;
+   
     const { APIObj } = useAPI();
     const { debug } = useDebug();
 
@@ -20,7 +20,7 @@ function useCommentModal(myNode) {
     const handleClose = () => setShow(false)
 
     const initCommentModal = (parentComment) => {
-        if(myNode == null){
+        if(data == null){
             handleError('NO NODE PROVIDED')
         }else {
             if(parentComment){
@@ -35,13 +35,13 @@ function useCommentModal(myNode) {
     }
 
     const CommentModalComponent = () => {
-        if(myNode == null){
+        if(data == null){
             return (<></>)
         }
         return (
     <CommentSubmitModal
         show={show}
-        node={myNode}
+        node={data}
         parentComment={parentComment}
         setParentComment ={setParentComment}
         handleClose={handleClose}

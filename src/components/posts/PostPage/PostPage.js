@@ -10,9 +10,7 @@ const PostPage = ({handleGoToPost, isLoading, post, node, myNode, setMyNode, han
                 handleInteraction={handleInteraction}
                 handleComment={handleComment}
                 handleShare={handleShare}
-               
                 >
-
             </PostSection>
         
         </>

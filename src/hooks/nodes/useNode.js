@@ -1,100 +1,131 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAPI } from "../../components/context/APIContext";
 import { useDebug } from "../../components/context/DebugContext";
+import useError from "../useError";
+import useFetchNode from "../../api/nodes/useFetchNode";
+import usePromiseTracker from "../usePromiseTracker";
 
-function useNode(query){
-    const [node, setNode] = useState(null)
-    const [myNode, setMyNode] = useState(null)
-    const [nodeFetched, setNodeFetched] = useState(null);
-    const [POST_UUID, setPOST_UUID] = useState(null)
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const {APIObj} = useAPI();
-    const {debug} = useDebug();
+/**
+ * @typedef {Object} NodeState
+ * @property {Object|null} data - The actual node data
+ * @property {boolean} isLoading - Indicates if the data is being fetched
+ * @property {string|null} error - Error message if an error occurred during fetch
+ */
 
+/**
+ * @typedef {Object} UseNodeResult
+ * @property {NodeState} node - The node data state
+ * @property {NodeState} myNode - The user's node data state
+ * @property {NodeState} postUUID - The post UUID state
+ * @property {boolean} isLoading - Indicates if any data is currently being fetched
+ * @property {string|null} error - Error message if an error occurred during fetch
+ * @property {function(Object): void} setMyNode - Function to update myNode data
+ * @property {function(): Promise<void>} refetch - Function to refetch all data
+ * @property {Object<string, PromiseStatus>} fetchStatus - Status of each fetch operation
+ */
 
-   
-    async function fetchMyNodeByQuery() {
-        debug(`Fetching myNode data by query ${query}`,  `${query} useNode Hook`)
-      setIsLoading(true);
-      setError(null);
-     
-        // Assume we have an API endpoint like '/api/profile/{userId}'
-        const response = APIObj.get(`/api/nodes/${query}/my/node`)
-        .then((response) =>{
-            console.log(`${query} myNode data response`,response.data)
-            setMyNode(response.data);
-        })
-        .catch((error)=>{
-            setError(error.message);
-        })
-        .finally(()=>{
-            setIsLoading(false);
-        })
-        
-        
-      }
-      async function fetchNodeByQuery() {
-        debug(`Fetching node data by query ${query}`, `${query} useNode Hook`)
-      setIsLoading(true);
-      setError(null);
-     
-        // Assume we have an API endpoint like '/api/profile/{userId}'
-        const response = APIObj.get(`/api/nodes/${query}/node`)
-        .then((response) =>{
-          console.log(`${query} node data response`,response.data)
+/**
+ * Custom hook for fetching and managing node-related data.
+ * 
+ * @param {string} query - The query string used to fetch node data
+ * @returns {UseNodeResult} An object containing node data, loading state, error state, and utility functions
+ */
+function useNode(query) {
+  const [state, setState] = useState({
+    nodeState: { data: null, isLoading: false, error: null },
+    myNodeState: { data: null, isLoading: false, error: null },
+    postUUIDState: { data: null, isLoading: false, error: null },
+  });
 
-            setNode(response.data.data);
-        })
-        .catch((error)=>{
-            setError(error.message);
-        })
-        .finally(()=>{
-            setIsLoading(false);
-        })
-        
-        
-      }
+  const { APIObj } = useAPI();
+  const { debug } = useDebug();
+  const { withErrorHandling } = useError();
 
-      async function fetchPostUuidByQuery() {
-        debug(`Fetching POST_UUID data by query ${query}`,  `${query} useNode Hook`)
-      setIsLoading(true);
-      setError(null);
-     
-        // Assume we have an API endpoint like '/api/profile/{userId}'
-        const response = APIObj.get(`/api/nodes/${query}/postUuid`)
-        .then((response) =>{
-          console.log(`${query} POST_UUID data response`,response.data)
+  const { fetchNodeData, fetchMyNodeData, fetchPostUuidByQuery } = useFetchNode(query);
 
-            setPOST_UUID(response.data.POST_UUID);
-        })
-        .catch((error)=>{
-            setError(error.message);
-        })
-        .finally(()=>{
-            setIsLoading(false);
-        })
-        
-        
-      }
+  const nodeTracker = usePromiseTracker('nodeState');
+  const myNodeTracker = usePromiseTracker('myNodeState');
+  const postUUIDTracker = usePromiseTracker('postUUIDState');
 
-    function fetch(){
-        fetchNodeByQuery();
-        fetchPostUuidByQuery()
+  const fetchAllData = useCallback(() => {
+    console.log('Starting fetchAllData', { query });
+
+    const updateState = (key, data, error = null) => {
+      setState(prevState => ({
+        ...prevState,
+        [key]: { 
+          data: error ? null : data, 
+          isLoading: false, 
+          error: error ? error.message : null 
+        },
+      }));
+    };
+
+    setState(prevState => ({
+      nodeState: { ...prevState.nodeState, isLoading: true, error: null },
+      myNodeState: { ...prevState.myNodeState, isLoading: true, error: null },
+      postUUIDState: { ...prevState.postUUIDState, isLoading: true, error: null },
+    }));
+
+    nodeTracker.trackPromise(fetchNodeData)
+      .then(response => updateState('nodeState', response.data.data))
+      .catch(error => updateState('nodeState', null, error));
+
+    myNodeTracker.trackPromise(fetchMyNodeData)
+      .then(response => updateState('myNodeState', response.data.data))
+      .catch(error => updateState('myNodeState', null, error));
+
+    postUUIDTracker.trackPromise(fetchPostUuidByQuery)
+      .then(response => updateState('postUUIDState', response.data.data))
+      .catch(error => updateState('postUUIDState', null, error));
+
+  }, [query, nodeTracker, myNodeTracker, postUUIDTracker, fetchNodeData, fetchMyNodeData, fetchPostUuidByQuery]);
+
+  useEffect(() => {
+    console.log('useNode effect triggered', { query });
+    fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    if (state.myNodeState.data) {
+      console.log('myNode Data updated:', state.myNodeState.data);
     }
-    useEffect(() => {
-        fetchNodeByQuery()
-        fetchMyNodeByQuery();
-        fetchPostUuidByQuery()
-    },[])
-    useEffect(()=>{
-        if(myNode){
-            console.log('myNode Data updated', myNode)
-        }
-    }, [myNode])
- 
+  }, [state.myNodeState.data]);
 
-  return { node,myNode, setMyNode, POST_UUID, isLoading, error, fetch };
+  const setMyNode = useCallback((newMyNode) => {
+    setState(prevState => ({
+      ...prevState,
+      myNodeState: { ...prevState.myNodeState, data: newMyNode },
+    }));
+    console.log('setMyNode called:', newMyNode);
+  }, []);
+
+  const isLoading = useMemo(() => 
+    state.nodeState.isLoading || state.myNodeState.isLoading || state.postUUIDState.isLoading,
+  [state.nodeState.isLoading, state.myNodeState.isLoading, state.postUUIDState.isLoading]);
+
+  const fetchStatus = useMemo(() => ({
+    nodeState: nodeTracker.status,
+    myNodeState: myNodeTracker.status,
+    postUUIDState: postUUIDTracker.status,
+  }), [nodeTracker.status, myNodeTracker.status, postUUIDTracker.status]);
+
+  const error = useMemo(() => 
+    state.nodeState.error || state.myNodeState.error || state.postUUIDState.error,
+  [state.nodeState.error, state.myNodeState.error, state.postUUIDState.error]);
+
+  useEffect(() => {
+    debug('useNode hook state', { state, fetchStatus, isLoading, error });
+  }, [state, fetchStatus, isLoading, error]);
+
+  return {
+    ...state,
+    isLoading,
+    error,
+    setMyNode,
+    refetch: fetchAllData,
+    fetchStatus,
+  };
 }
 
 export default useNode;

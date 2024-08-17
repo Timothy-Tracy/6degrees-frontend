@@ -5,13 +5,13 @@ import useError from "../useError";
 import ShareModal from "../../components/modals/share/ShareModal";
 import { AppError } from "../../errors/customErrors";
 
-const useShare = (myNode, setMyNode) => {
+const useShare = (myNodeState, setMyNode) => {
     const errorName = 'useShare Hook Error'
    //if myNode does not exist, make it if share button is pressed
    const [show, setShow] = useState(false);
 
-   const [isLoading, setIsLoading] = useState(true);
-    const [error, setTheError] = useState(null);
+   const {data, isLoading, error} = myNodeState;
+    
     const { APIObj } = useAPI();
     const { debug } = useDebug();
     const[ nodeLocal, setNodeLocal] = useState(null)
@@ -30,7 +30,7 @@ const useShare = (myNode, setMyNode) => {
     const handleInteraction = (callbackFn) => {
         console.log(typeof callbackFn)
         debug('Hnadling interaction', 'Hook: useShare, function: handleInteraction')
-        if(!myNode){
+        if(!data){
         
             handleError(new AppError({name: errorName, message:'myNode provided is null'}))
             //Intereact with node for the first time
@@ -51,16 +51,16 @@ const useShare = (myNode, setMyNode) => {
     * @param {Object} [options.setMyNode=()] - the global scope setter function for myNode state
     */
    const initShareModal = () => {
-    console.log('initShareModal mynode data inputted ', myNode)
-    if(!myNode){
+    console.log('initShareModal mynode data inputted ', data)
+    if(!data){
         
         handleError(new AppError({name: errorName, message:'myNode provided is null'}))
         //Intereact with node for the first time
         //set the 'global state' of the node just created
         console.log('no myNode provided, interacting for the first time')
     }  else {
-        console.log('myNode accepted', myNode)
-    setNodeLocal(myNode);
+        console.log('myNode accepted', data)
+    setNodeLocal(data);
     handleOpen();
     }
     
