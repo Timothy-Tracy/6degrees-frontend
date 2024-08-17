@@ -6,12 +6,12 @@ import React, { Suspense } from "react";
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** 6 Degrees Pages ****/
-const UserPage = lazy(() => import("../components/users/UserPage.js"));
+const UserPage = lazy(() => import("../components/pages/users/UserPage.js"));
 
 const WelcomePage = lazy(() => import("../components/welcome/WelcomePage.js"));
 
 const Login = lazy(() => import("../components/auth/Login.js"));
-const PostPage = lazy(() => import("../components/posts/PostPage.js")); // Added Admin Page
+const PostPage = lazy(() => import("../components/pages/posts/PostPage/PostPage.js")); // Added Admin Page
 const ProfilePage = lazy(() => import("../components/profile/ProfilePage.js"));
 const MyAccountPage = lazy(() => import("../components/ui/AccountSettings.js"));
 const CreatePostPage = lazy(() => import("../components/posts/create/CreatePostPage.js")); // Added Admin Page

@@ -2,9 +2,11 @@ export class AppError extends Error {
     constructor(obj) {
       super(obj.message);
       this.name = obj.name || "AppError"
+      this.message = obj.message
       this.statusCode = obj.statusCode || null;
       this.error = obj.error || null;
-      Error.captureStackTrace(this, this.constructor);
+      this.stackTrace = Error.captureStackTrace(this, this.constructor);
+    
     }
   }
 

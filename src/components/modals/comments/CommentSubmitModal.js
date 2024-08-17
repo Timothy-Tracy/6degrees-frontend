@@ -8,9 +8,9 @@ import { Card, Button, Modal, FormLabel, FormControl } from 'react-bootstrap'
 import { CloseButton, Col, FormGroup, ModalBody, ModalHeader, Row, Form, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 
 
-import { useAPI } from "../context/APIContext.js";
-import { useUser } from "../context/UserContext.js";
-import VisibilityInput from "../visibility/VisibilityInput.js";
+import { useAPI } from "../../context/APIContext.js";
+import { useUser } from "../../context/UserContext.js";
+import VisibilityInput from "../../visibility/VisibilityInput.js";
 
 
 const CommentSubmitModal = ({ show, handleClose, parentComment, setParentComment, node, setSubmission }) => {
@@ -76,8 +76,8 @@ const CommentSubmitModal = ({ show, handleClose, parentComment, setParentComment
 
 
     useEffect(() => {
-        console.log(show)
-        console.log('showmodal state change')
+        //console.log(show)
+        //console.log('showmodal state change')
     }, [show])
 
 

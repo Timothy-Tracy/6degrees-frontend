@@ -15,15 +15,15 @@ function useNode(query){
 
    
     async function fetchMyNodeByQuery() {
-        debug('Fetching node by query', 'useNode Hook')
+        debug(`Fetching myNode data by query ${query}`,  `${query} useNode Hook`)
       setIsLoading(true);
       setError(null);
      
         // Assume we have an API endpoint like '/api/profile/{userId}'
-        const response = APIObj.get(`/api/nodes/${query}/my-node`)
+        const response = APIObj.get(`/api/nodes/${query}/my/node`)
         .then((response) =>{
-            console.log(response)
-            setMyNode(response.data.data);
+            console.log(`${query} myNode data response`,response.data)
+            setMyNode(response.data);
         })
         .catch((error)=>{
             setError(error.message);
@@ -35,14 +35,15 @@ function useNode(query){
         
       }
       async function fetchNodeByQuery() {
-        debug('Fetching node by query', 'useNode Hook')
+        debug(`Fetching node data by query ${query}`, `${query} useNode Hook`)
       setIsLoading(true);
       setError(null);
      
         // Assume we have an API endpoint like '/api/profile/{userId}'
         const response = APIObj.get(`/api/nodes/${query}/node`)
         .then((response) =>{
-            console.log(response)
+          console.log(`${query} node data response`,response.data)
+
             setNode(response.data.data);
         })
         .catch((error)=>{
@@ -56,14 +57,15 @@ function useNode(query){
       }
 
       async function fetchPostUuidByQuery() {
-        debug('Fetching post uuid by query', 'useNode Hook')
+        debug(`Fetching POST_UUID data by query ${query}`,  `${query} useNode Hook`)
       setIsLoading(true);
       setError(null);
      
         // Assume we have an API endpoint like '/api/profile/{userId}'
         const response = APIObj.get(`/api/nodes/${query}/postUuid`)
         .then((response) =>{
-            console.log(response)
+          console.log(`${query} POST_UUID data response`,response.data)
+
             setPOST_UUID(response.data.POST_UUID);
         })
         .catch((error)=>{
@@ -85,9 +87,14 @@ function useNode(query){
         fetchMyNodeByQuery();
         fetchPostUuidByQuery()
     },[])
+    useEffect(()=>{
+        if(myNode){
+            console.log('myNode Data updated', myNode)
+        }
+    }, [myNode])
  
 
-  return { node,myNode, POST_UUID, isLoading, error, fetch };
+  return { node,myNode, setMyNode, POST_UUID, isLoading, error, fetch };
 }
 
 export default useNode;

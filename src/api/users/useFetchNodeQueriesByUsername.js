@@ -2,24 +2,24 @@ import { useEffect, useState } from "react";
 import { useAPI } from "../../components/context/APIContext";
 import { useDebug } from "../../components/context/DebugContext";
 
-function useFetchResponseData(username){
-    const [profile, setProfile] = useState(null);
+function useFetchNodeQueriesByUsername(uname){
+    const [queries, setQueries] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const {APIObj} = useAPI();
     const {debug} = useDebug();
+    const [username, updateUsername] = useState(uname || null)
 
-  useEffect(() => {
-    async function fetchProfile() {
-        debug('Fetching profile data', 'useFetchResponseData Hook')
+    async function fetchNodeQueriesByUsername(usernameParam) {
+        debug(`Fetching node queries by username ${usernameParam}`, 'useFetchNodeQueriesByUsername Hook')
       setIsLoading(true);
       setError(null);
      
         // Assume we have an API endpoint like '/api/profile/{userId}'
-        const response = APIObj.get(`/api/nodes/${username}/node-queries`)
+        const response = APIObj.get(`/api/nodes/${usernameParam}/node-queries`)
         .then((response) =>{
-            console.log('useFetchResponseData fetch', response)
-            setProfile(response.data.data);
+            console.log('fetchNodeQueriesByUsername fetch', response.data.data)
+            setQueries(response.data.data);
         })
         .catch((error)=>{
             setError(error.message);
@@ -32,10 +32,8 @@ function useFetchResponseData(username){
       }
     
 
-    fetchProfile();
-  }, []);
 
-  return { profile, isLoading, error };
+  return { queries, updateUsername,fetchNodeQueriesByUsername, isLoading, error };
 }
 
-export default useFetchResponseData;
+export default useFetchNodeQueriesByUsername;

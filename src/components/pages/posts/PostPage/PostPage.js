@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useCallback, memo, useRef } from "react";
-import { useAPI } from "../context/APIContext"
+import { useAPI } from "../../../context/APIContext.js"
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGlobalError } from '../context/ErrorContext';
+import { useGlobalError } from '../../../context/ErrorContext.js';
 import { Card, Button, Badge, Container } from 'reactstrap'
 import { Col, Row } from "reactstrap";
-import GlobalErrorComponent from "../../errors/GlobalErrorComponent";
-import TimeAgo from "../../tools/TimeAgo";
+import GlobalErrorComponent from "../../../../errors/GlobalErrorComponent.js";
+import TimeAgo from "../../../../tools/TimeAgo.js";
 import styles from './GraphVisualizer.modules.css';
-import CommentModal from "./interactions/CommentModal.js";
-import ShareButton from "./interactions/ShareButton.js";
-import useNode from "../../hooks/useNode.js";
-import useFetchNodeContextByQuery from "../../api/nodes/useFetchNodeContextByQuery.js";
-import { useUser } from "../context/UserContext.js";
-import GraphVisualizer from "../graph/GraphVisualizer.js";
-import CommentProvider from "../comments/CommentProvider.js";
+import CommentModal from "../../../posts/interactions/CommentModal.js";
+import ShareButton from "../../../posts/interactions/ShareButton.js";
+import useNode from "../../../../hooks/useNode.js";
+import useFetchNodeContextByQuery from "../../../../api/nodes/useFetchNodeContextByQuery.js";
+import { useUser } from "../../../context/UserContext.js";
+import GraphVisualizer from "../../../graph/GraphVisualizer.js";
+import CommentProvider from "../../../comments/CommentProvider.js";
 
 
 const PostPage = () => {

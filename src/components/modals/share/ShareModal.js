@@ -10,7 +10,7 @@ const ShareModal = ({show, handleClose, node}) =>{
     
     useEffect(()=>{
         if(show){
-            debug(JSON.stringify(node), 'Share Modal Node Information')
+            //debug(JSON.stringify(node), 'Share Modal Node Information')
 
         }
        

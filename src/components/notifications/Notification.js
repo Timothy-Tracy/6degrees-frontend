@@ -51,7 +51,7 @@ const Notification = ({ sender, title, message, type, duration, icon, embed, wid
     }
   }
 
-  const toastBody = ({ message, embed, children }) => {
+  const NotificationBody = ({ message, embed, children }) => {
     if (message || embed || children) {
       return (
         <Container className='px-3'>
@@ -74,7 +74,10 @@ const Notification = ({ sender, title, message, type, duration, icon, embed, wid
           <ToastHeader icon={icon || null} {...toggleBool}>{sender? `${sender}:`:''}{title}</ToastHeader>
           
         </Container>
-        <toastBody message={message} embed={embed} children={children}></toastBody>
+        
+        <NotificationBody message={message} embed={embed} children={children}></NotificationBody>
+
+        
       </Toast>
     </Container>
 

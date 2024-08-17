@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Col, Modal, ModalHeader } from "reactstrap"
-import ShareModal from "./ShareModal";
+import ShareModal from "../../modals/share/ShareModal";
 import { useDebug } from "../../context/DebugContext";
 import useInteract from "../../../api/nodes/useInteract";
 import useFetchNodeContextByQuery from "../../../api/nodes/useFetchNodeContextByQuery";

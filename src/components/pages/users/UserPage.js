@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { Button, Col, Container, Row } from "reactstrap"
-import useFetchUser from "../../api/users/useFetchUser";
-import useFetchManyPosts from "../../api/posts/useFetchManyPosts";
-import PostCard from "../posts/PostCard";
-import PostCardProvider from "../posts/PostCardProvider";
+import useFetchUser from "../../../api/users/useFetchUser";
+import useFetchManyPosts from "../../../api/posts/useFetchManyPosts";
+import PostCard from "../../posts/PostCard/PostCard";
+import PostCardProvider from "../../posts/PostCard/PostCardProvider";
+import useFetchNodeQueriesByUsername from "../../../api/users/useFetchNodeQueriesByUsername";
 
 const UserPage = ({ username }) => {
 
     const { query } = useParams();
     const { setUsername, userData } = useFetchUser()
     const [user, setUser] = useState(null);
+    const {queries, updateUsername,fetchNodeQueriesByUsername, isLoading, error} = useFetchNodeQueriesByUsername(query)
+
     
    // const {posts,setURLQuery, fetchPosts} = useFetchManyPosts({target: {username:query}});
     useEffect(() => {
         setUsername(query)
-    }, [])
+        fetchNodeQueriesByUsername(query)
+    }, [query])
     useEffect(() => {
         console.log(userData)
         setUser(userData)
@@ -27,6 +31,8 @@ const UserPage = ({ username }) => {
         //fetchPosts()
 
     }, [user])
+
+   
 
     // useEffect(()=>{
     //     console.log(posts, 'POSTS')
@@ -64,10 +70,17 @@ const UserPage = ({ username }) => {
             </Row>
 
            
+            
+            {
+                queries?.map((query, index)=>(
+                    <PostCardProvider
+                    key={`${query.id}-${index}-${Date.now()}`}
+                        query={query}
+                    >
 
-            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
-            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
-            <PostCardProvider query='silly-gray-microphone'></PostCardProvider>
+                    </PostCardProvider>
+                ))
+            }
             {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
             {/*<pre>{JSON.stringify(posts, null, 2)}</pre>*/}
         </Container>

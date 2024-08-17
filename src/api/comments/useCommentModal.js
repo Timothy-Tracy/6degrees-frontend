@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useAPI } from "../../components/context/APIContext";
 import { useDebug } from "../../components/context/DebugContext";
 
-import CommentSubmitModal from "../../components/comments/CommentSubmitModal";
+import CommentSubmitModal from "../../components/modals/comments/CommentSubmitModal";
 import useError from "../../hooks/useError";
 
-function useCommentModal() {
+function useCommentModal(myNode) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setTheError] = useState(null);
     const { APIObj } = useAPI();
@@ -19,27 +19,29 @@ function useCommentModal() {
     const handleOpen = () => setShow(true);
     const handleClose = () => setShow(false)
 
-    const initCommentModal = ({node, parentComment}) => {
-        if(node == null){
+    const initCommentModal = (parentComment) => {
+        if(myNode == null){
             handleError('NO NODE PROVIDED')
+        }else {
+            if(parentComment){
+                setParentComment(parentComment);
+            }
+    
+            handleOpen();
         }
-        setNode(node);
-        if(parentComment != null){
-            setParentComment(parentComment);
-        }
-
-        handleOpen();
+      
+       
 
     }
 
     const CommentModalComponent = () => {
-        if(node == null){
+        if(myNode == null){
             return (<></>)
         }
         return (
     <CommentSubmitModal
         show={show}
-        node={node}
+        node={myNode}
         parentComment={parentComment}
         setParentComment ={setParentComment}
         handleClose={handleClose}

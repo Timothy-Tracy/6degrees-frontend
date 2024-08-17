@@ -1,14 +1,28 @@
+import { useEffect } from "react";
 import useFetchResponseData from "../../api/profile/useFetchResponseData";
+import useFetchNodeQueriesByUsername from "../../api/users/useFetchNodeQueriesByUsername";
+import PostCardProvider from "../posts/PostCard/PostCardProvider";
 import ProfileResponses from "./ProfileResponses";
 
 
 const ProfilePage = () => {
-    const {profile, isLoading, error} = useFetchResponseData()
-
+    const {queries,fetchNodeQueriesByUsername, isLoading, error} = useFetchNodeQueriesByUsername()
+    useEffect(()=>{
+        fetchNodeQueriesByUsername('timsmith')
+    },[])
     return (
         <>
             <h1>Profile</h1>
-            <ProfileResponses profile={profile}/>
+            {
+                queries?.map((query)=>(
+                    <PostCardProvider
+                        query={query}
+                    >
+
+                    </PostCardProvider>
+                ))
+            }
+           
         </>
     )
 }
