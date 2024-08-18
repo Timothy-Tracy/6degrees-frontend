@@ -1,12 +1,15 @@
 import PostSection from "./PostSection"
 
-const PostPage = ({handleGoToPost, isLoading, post, node, myNode, setMyNode, handleInteraction, handleComment, handleShare, children}) =>{
+const PostPage = ({handleGoToPost, isLoading, post, nodeState, myNodeState, setMyNode, handleInteraction, handleComment, handleShare, children}) =>{
     
 
     return(
         <>
             <PostSection 
                 post={post}
+                nodeState={nodeState}
+
+                myNodeState={myNodeState}
                 handleInteraction={handleInteraction}
                 handleComment={handleComment}
                 handleShare={handleShare}

@@ -1,89 +1,82 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useRef } from "react";
 import { useAPI } from "../../components/context/APIContext";
 import { useDebug } from "../../components/context/DebugContext";
 import useError from "../useError";
 import useFetchNode from "../../api/nodes/useFetchNode";
 import usePromiseTracker from "../usePromiseTracker";
+import useAppDataState from "../useAppDataState";
+import { useDeepCompareMemoize } from "../useDeepCompareMemoize";
+import { useDependencyChangeTracker } from "../useDependencyChangeTracker";
 
-/**
- * @typedef {Object} NodeState
- * @property {Object|null} data - The actual node data
- * @property {boolean} isLoading - Indicates if the data is being fetched
- * @property {string|null} error - Error message if an error occurred during fetch
- */
-
-/**
- * @typedef {Object} UseNodeResult
- * @property {NodeState} node - The node data state
- * @property {NodeState} myNode - The user's node data state
- * @property {NodeState} postUUID - The post UUID state
- * @property {boolean} isLoading - Indicates if any data is currently being fetched
- * @property {string|null} error - Error message if an error occurred during fetch
- * @property {function(Object): void} setMyNode - Function to update myNode data
- * @property {function(): Promise<void>} refetch - Function to refetch all data
- * @property {Object<string, PromiseStatus>} fetchStatus - Status of each fetch operation
- */
-
-/**
- * Custom hook for fetching and managing node-related data.
- * 
- * @param {string} query - The query string used to fetch node data
- * @returns {UseNodeResult} An object containing node data, loading state, error state, and utility functions
- */
 function useNode(query) {
-  const [state, setState] = useState({
-    nodeState: { data: null, isLoading: false, error: null },
-    myNodeState: { data: null, isLoading: false, error: null },
-    postUUIDState: { data: null, isLoading: false, error: null },
+  const { state, updateStateData, updateStateIsLoading, setStateFetchFunction, getIsLoading, getError } = useAppDataState({
+    nodeState: { data: null, isLoading: false, error: null, fetch: () => {} },
+    myNodeState: { data: null, isLoading: false, error: null, fetch: () => {} },
+    postUUIDState: { data: null, isLoading: false, error: null, fetch: () => {} },
   });
 
   const { APIObj } = useAPI();
   const { debug } = useDebug();
   const { withErrorHandling } = useError();
+  
 
   const { fetchNodeData, fetchMyNodeData, fetchPostUuidByQuery } = useFetchNode(query);
 
   const nodeTracker = usePromiseTracker('nodeState');
   const myNodeTracker = usePromiseTracker('myNodeState');
   const postUUIDTracker = usePromiseTracker('postUUIDState');
+  const signatureRef = useRef(Math.floor(Math.random() * 100));
 
+
+
+  const setFetchFunctions = useCallback(()=>{
+    
+    
+    setStateFetchFunction('nodeState', () => {
+      updateStateIsLoading('nodeState', true);
+      nodeTracker.trackPromise(fetchNodeData)
+        .then(response => updateStateData('nodeState', response.data.data))
+        .catch(error => updateStateData('nodeState', null, error));
+    });
+
+    setStateFetchFunction('myNodeState', () => {
+      updateStateIsLoading('myNodeState', true);
+      myNodeTracker.trackPromise(fetchMyNodeData)
+        .then(response => updateStateData('myNodeState', response.data.data))
+        .catch(error => updateStateData('myNodeState', null, error));
+    });
+
+    setStateFetchFunction('postUUIDState', () => {
+      updateStateIsLoading('postUUIDState', true);
+      postUUIDTracker.trackPromise(fetchPostUuidByQuery)
+        .then(response => updateStateData('postUUIDState', response.data.data))
+        .catch(error => updateStateData('postUUIDState', null, error));
+    });
+  }, [nodeTracker.signature, myNodeTracker.signature,postUUIDTracker.signature, fetchNodeData, fetchMyNodeData, fetchPostUuidByQuery])
+
+
+  
   const fetchAllData = useCallback(() => {
-    console.log('Starting fetchAllData', { query });
+    
+    console.log(`Starting fetchAllData`, { query });
+    console.log(`signature
+      ${state.nodeState.fetch.toString()}`
+    )
+    state.nodeState.fetch();
+    state.myNodeState.fetch();
+    state.postUUIDState.fetch();
+  }, [state.nodeState.fetch, state.myNodeState.fetch, state.postUUIDState.fetch]);
 
-    const updateState = (key, data, error = null) => {
-      setState(prevState => ({
-        ...prevState,
-        [key]: { 
-          data: error ? null : data, 
-          isLoading: false, 
-          error: error ? error.message : null 
-        },
-      }));
-    };
 
-    setState(prevState => ({
-      nodeState: { ...prevState.nodeState, isLoading: true, error: null },
-      myNodeState: { ...prevState.myNodeState, isLoading: true, error: null },
-      postUUIDState: { ...prevState.postUUIDState, isLoading: true, error: null },
-    }));
-
-    nodeTracker.trackPromise(fetchNodeData)
-      .then(response => updateState('nodeState', response.data.data))
-      .catch(error => updateState('nodeState', null, error));
-
-    myNodeTracker.trackPromise(fetchMyNodeData)
-      .then(response => updateState('myNodeState', response.data.data))
-      .catch(error => updateState('myNodeState', null, error));
-
-    postUUIDTracker.trackPromise(fetchPostUuidByQuery)
-      .then(response => updateState('postUUIDState', response.data.data))
-      .catch(error => updateState('postUUIDState', null, error));
-
-  }, [query, nodeTracker, myNodeTracker, postUUIDTracker, fetchNodeData, fetchMyNodeData, fetchPostUuidByQuery]);
-
-  useEffect(() => {
-    console.log('useNode effect triggered', { query });
+  useEffect(()=>{
     fetchAllData();
+
+  }, [state.nodeState.fetch, state.myNodeState.fetch, state.postUUIDState.fetch])
+  useEffect(() => {
+    console.log('Setting fetch functions and fetching data');
+    setFetchFunctions();
+   
+    
   }, []);
 
   useEffect(() => {
@@ -93,16 +86,9 @@ function useNode(query) {
   }, [state.myNodeState.data]);
 
   const setMyNode = useCallback((newMyNode) => {
-    setState(prevState => ({
-      ...prevState,
-      myNodeState: { ...prevState.myNodeState, data: newMyNode },
-    }));
+    updateStateData('myNodeState', newMyNode);
     console.log('setMyNode called:', newMyNode);
-  }, []);
-
-  const isLoading = useMemo(() => 
-    state.nodeState.isLoading || state.myNodeState.isLoading || state.postUUIDState.isLoading,
-  [state.nodeState.isLoading, state.myNodeState.isLoading, state.postUUIDState.isLoading]);
+  }, [updateStateData]);
 
   const fetchStatus = useMemo(() => ({
     nodeState: nodeTracker.status,
@@ -110,18 +96,24 @@ function useNode(query) {
     postUUIDState: postUUIDTracker.status,
   }), [nodeTracker.status, myNodeTracker.status, postUUIDTracker.status]);
 
-  const error = useMemo(() => 
-    state.nodeState.error || state.myNodeState.error || state.postUUIDState.error,
-  [state.nodeState.error, state.myNodeState.error, state.postUUIDState.error]);
-
   useEffect(() => {
-    debug('useNode hook state', { state, fetchStatus, isLoading, error });
-  }, [state, fetchStatus, isLoading, error]);
+    console.log('useNode hook state', state);
+  }, [ fetchStatus, getIsLoading(), getError()]);
+
+  useEffect(()=>{
+    console.log('Debug Callback: i run whenever the setFetchFunctions callback initializes or changes')
+  }, [setFetchFunctions])
+
+  useEffect(()=>{
+    console.log('Debug Callback: i run whenever the fetchAllData callback initializes or changes')
+  }, [fetchAllData])
+
+ 
 
   return {
     ...state,
-    isLoading,
-    error,
+    isLoading: getIsLoading(),
+    error: getError(),
     setMyNode,
     refetch: fetchAllData,
     fetchStatus,

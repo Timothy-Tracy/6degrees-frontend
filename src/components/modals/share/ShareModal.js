@@ -18,8 +18,10 @@ const ShareModal = ({show, handleClose, node}) =>{
 
     return(
         <>
-        
-             <Modal isOpen={show} toggle={handleClose} centered>
+            
+             <Modal className='modal border-5 border-info rounded-5' isOpen={show} toggle={handleClose} centered style={{
+                border: '2px solid #007bff'
+             }}>
                 <ModalHeader>Share</ModalHeader>
                 <ModalBody>
                 <Row className='py-3'>

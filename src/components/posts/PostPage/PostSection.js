@@ -1,11 +1,13 @@
 import { Badge, Button, Card, CardBody, CardSubtitle, CardTitle, Col, Container, Row } from "reactstrap"
 import TimeAgo from "../../../tools/TimeAgo"
-import ShareButton from "../interactions/ShareButton"
+
 import { FaRegCommentDots, FaRegEye } from "react-icons/fa6"
 import { FiShare } from "react-icons/fi"
 import UsernameAt from "../../users/UsernameAt"
+import CommentButton from "../../buttons/CommentButton"
+import ShareButton from "../../buttons/ShareButton"
 
-const PostSection = ({ post, handleInteraction, handleComment, handleShare, children }) => {
+const PostSection = ({ nodeState, myNodeState, post, handleInteraction, handleComment, handleShare, children }) => {
 
 
     return (
@@ -39,29 +41,21 @@ const PostSection = ({ post, handleInteraction, handleComment, handleShare, chil
 
                             </div>
 
-                            <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={() => handleInteraction(handleShare)}>
-                                <div className="d-inline-flex px-2 py-1 gap-2">
-                                    <FiShare className='color-primary' size={24}></FiShare>
-                                    <strong className='px-1'>Share</strong>
-                                    <Badge className='px-1'>{post?.shares?.low ?? ''}</Badge>
-                                </div>
-                            </Button>
+                            <ShareButton
+                                    nodeState={nodeState}
+                                    myNodeState={myNodeState}
+                                    post={post}
+                                    handleClick={() => handleInteraction(handleShare)}
+                                />
 
+                                <CommentButton
+                                    nodeState={nodeState}
+                                    myNodeState={myNodeState}
+                                    post={post}
+                                    handleClick={() => handleInteraction(handleComment)}
+                                    
+                                />
 
-
-                            <Button className='btn rounded-pill p-2 px-2 gap-2' color='primary' onClick={() => handleInteraction(handleComment)}>
-                                <div className='d-inline-flex align-items-center '>
-                                    <FaRegCommentDots className='color-primary' size={24}/>
-                                    <div className='px-2 py-1 gap-2'>
-                                        <strong>
-                                            Respond
-                                        </strong></div>
-                                    <Badge>
-                                        {post?.comments?.low ?? ''}
-                                    </Badge>
-
-                                </div>
-                            </Button>
                         </div>
                     </Row>
                 </CardBody>

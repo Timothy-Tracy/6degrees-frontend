@@ -30,7 +30,15 @@ function useFetchNode(query) {
   const fetchData = useCallback(async (endpoint, dataKey) => { 
     
     
-      debug(`Fetching ${dataKey} data for query: ${query}`, `useFetchNodeData Hook`);
+      console.log(`Fetching ${dataKey} data for query: ${query} from endpoint ${endpoint}`, 
+        {
+            module:`useFetchNodeData Hook`,
+            function:`fetchData`,
+            query: `${query}`,
+            dataKey: `${dataKey}`,
+            endpoint: `${endpoint}`,
+
+        });
       const response = APIObj.get(endpoint);
       console.log(`${dataKey} data response for query ${query}:`, response);
       return response;

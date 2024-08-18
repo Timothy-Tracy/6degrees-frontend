@@ -12,7 +12,7 @@ import useShare from "../../hooks/share/useShare.js";
 
 const PostProvider = ({query, children}) => {
 
-    const {nodeState, myNodeState, setMyNode, POST_UUIDState, isLoaded, error, fetch} = useNode(query)
+    const {nodeState, myNodeState, setMyNode, POST_UUIDState, isLoaded, error, fetch, refetch} = useNode(query)
     const [loading, setLoading] = useState(true);
     
     const {post, fetchPost}= usePost()
@@ -30,7 +30,7 @@ const PostProvider = ({query, children}) => {
         if(post!=null){
             setLoading(false)
         }
-    })
+    }, [])
 
     const handleGoToPost = ()=>{
         navigate(`/posts/${query}`)
@@ -43,9 +43,14 @@ const PostProvider = ({query, children}) => {
         handleShare: initShareModal,
         handleComment: initCommentModal,
         post:post,
-        node: nodeState,
-        myNode:myNodeState
+        nodeState: nodeState,
+        myNodeState:myNodeState
       };
+
+      useEffect(()=>{
+        console.log('rerendering PostProvider')
+     
+      },[])
     
     return (
         <>

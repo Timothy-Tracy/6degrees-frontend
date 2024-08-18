@@ -1,5 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useDebug } from '../components/context/DebugContext';
+import useSimpleCallbackCheck from './useSimpleCallbackCheck';
+
+//THIS IS CURRENTLY OPTIMIZED AND THE USECALLBACK WORKS AS INTENDED, DO NOT CHANGE
 
 /**
  * @typedef {'idle' | 'pending' | 'resolved' | 'rejected'} PromiseStatus
@@ -16,33 +19,38 @@ function usePromiseTracker(operationName) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const { debug } = useDebug();
+  const signatureRef = useRef(Math.floor(Math.random() * 100));
 
   const updateStatus = useCallback((newStatus) => {
     setStatus(newStatus);
-    console.log(`Promise Update ${operationName}: ${newStatus}`);
-  }, [operationName]);
+  }, []);
 
   const trackPromise = useCallback(async (promiseFunc) => {
     updateStatus('pending');
     setResult(null);
     setError(null);
+   
 
     try {
       const res = await promiseFunc();
       setResult(res);
       updateStatus('resolved');
-      console.log(`Promise Resolved: ${operationName}: `, res);
+      console.log(`Promise ${operationName} ${signatureRef.current} resolved: `, res);
+    
       return res;
     } catch (err) {
       setError(err);
       updateStatus('rejected');
-      console.log(`Promise Rejected: ${operationName}: `, err);
+      console.log(`Promise ${operationName} ${signatureRef.current} rejected: `, err);
+     
       throw err;
     }
-  }, [operationName, updateStatus]);
+    
+
+  }, []);
 
   useEffect(() => {
-    console.log(`Promise Tracker State: ${operationName} tracker state:`, { status, result, error });
+    console.log(`Promise ${operationName} ${signatureRef.current} ${status}:`, { status, result, error });
   }, [operationName, status, result, error]);
 
   return {
@@ -50,7 +58,8 @@ function usePromiseTracker(operationName) {
     status,
     result,
     error,
-    isLoading: status === 'pending'
+    isLoading: status === 'pending',
+    signature: signatureRef.current  // Expose the signature for testing
   };
 }
 
