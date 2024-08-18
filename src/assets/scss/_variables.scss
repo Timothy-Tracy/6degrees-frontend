@@ -67,7 +67,7 @@ $headings-font-weight: 600 !default;
 
 $card-border-width: 0 !default;
 $card-box-shadow: $box-shadow !default;
-$grid-gutter-width: 1.85rem !default;
+// $grid-gutter-width: 1.85rem !default;
 $card-bg: $black;
 
 $input-bg: $white !default;
@@ -113,4 +113,9 @@ $toast-header-border-color:         rgba($black, .05);
 
 $input-bg: $gray-800;
 $input-color: $light;
+
+$modal-content-border-color:       $light;
+$modal-content-border-width:       0.1rem;
+$modal-content-border-radius:       1.5rem;
+$modal-inner-padding: 2rem;
 

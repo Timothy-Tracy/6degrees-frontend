@@ -11,6 +11,7 @@ import { CloseButton, Col, FormGroup, ModalBody, ModalHeader, Row, Form, ButtonD
 import { useAPI } from "../../context/APIContext.js";
 import { useUser } from "../../context/UserContext.js";
 import VisibilityInput from "../../visibility/VisibilityInput.js";
+import CustomModalHeader from "../CustomModalHeader.js";
 
 
 const CommentSubmitModal = ({ show, handleClose, parentComment, setParentComment, node, setSubmission }) => {
@@ -104,19 +105,18 @@ const CommentSubmitModal = ({ show, handleClose, parentComment, setParentComment
         <>
             <Modal show={show} onHide={handleClose} centered>
 
-                <ModalHeader >
-
-                    <h3>Add a Comment</h3>
-                    <CloseButton onClick={() => { setParentComment(''); handleClose() }} className='justify-content-end' variant='white'></CloseButton>
-                </ModalHeader>
-
+            <CustomModalHeader handleClose={()=> { setParentComment(''); handleClose()}}>
+                        Add A Comment
+            </CustomModalHeader>
+               
 
 
-                <DebugInfo></DebugInfo>
+
+               
                 <ModalBody>
                     <p>{parentComment ? parentComment : ''}</p>
-                    <p>Login Status: {JSON.stringify(status)}</p>
-                    <p>Node Context: {JSON.stringify(node, null, 2)}</p>
+                  
+                    <p>{node?.EDGE_QUERY}</p>
                     {alert}
                     <Form onSubmit={handleSubmit}>
                         <Row>

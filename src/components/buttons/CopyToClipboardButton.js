@@ -15,8 +15,8 @@ const CopyToClipboardButton = ({ text }) => {
   };
 
   return (
-    <Button onClick={handleCopy}>
-      {isCopied ? 'Copied!' : 'Copy to Clipboard'}
+    <Button color='primary mx-4' onClick={handleCopy}>
+      {isCopied ? 'Copied!' : '  Copy '}
     </Button>
   );
 };
